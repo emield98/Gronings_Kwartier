@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
 import { Analytics } from "@vercel/analytics/next"
-
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: 'Gronings Kwartier',
@@ -41,6 +41,7 @@ export default function RootLayout({
     <html lang="nl">
       <body>
         {children}
+        <Toaster />
         <Analytics />
       </body>
     </html>
