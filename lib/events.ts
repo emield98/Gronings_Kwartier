@@ -4,19 +4,14 @@ export interface Event {
   startTime: string
   endTime: string
   title: string
-  artist: string
+  edition: string
   venue: string
   address: string
   type: 'day' | 'night'
   status: 'tickets-available' | 'sold-out' | 'coming-soon'
   description?: string
   genres: string[]
-  // Ticket section specific fields
-  ticketDate: string // Format: "30 aug"
-  datetime: string // Format: "30 augustus 2025 om 17:30 – 30 augustus 2025 om 22:00"
-  location: string // Venue name for tickets
-  ticketVenue: string // Additional venue info for tickets
-  ticketUrl: string // URL for purchasing tickets
+  ticketUrl?: string // Only show when status is 'tickets-available'
 }
 
 export const events: Event[] = [
@@ -26,17 +21,13 @@ export const events: Event[] = [
     startTime: '20:00',
     endTime: '04:00',
     title: 'Gronings Kwartier Zomereditie',
-    artist: 'Gronings Kwartier Zomereditie',
+    edition: 'Gronings Kwartier Zomereditie',
     venue: 'De Huiskamer',
     address: 'Suikerlaan 18, 9743 DA Groningen',
     type: 'night',
-    status: 'tickets-available',
+    status: 'coming-soon',
     description: 'Join us for an unforgettable night of electronic music in the heart of Groningen.',
     genres: ['Electronic', 'Techno', 'House'],
-    ticketDate: '8 nov',
-    datetime: '8 november 2025 om 20:00 – 9 november 2025 om 04:00',
-    location: 'De Huiskamer',
-    ticketVenue: 'Suikerlaan 18, 9743 DA Groningen',
     ticketUrl: 'https://eventix.io'
   }
 ]
@@ -53,4 +44,44 @@ export const getEventById = (id: string) => {
 
 export const getEventsByStatus = (status: Event['status']) => {
   return events.filter(event => event.status === status)
+}
+
+// Helper function to check if tickets should be shown
+export const shouldShowTickets = (event: Event) => {
+  return event.status === 'tickets-available' && event.ticketUrl
+}
+
+// Helper function to get formatted date for display
+export const getFormattedDate = (event: Event) => {
+  const date = new Date(event.date)
+  const day = date.getDate()
+  const month = date.toLocaleDateString('nl-NL', { month: 'short' })
+  return `${day} ${month}`
+}
+
+// Helper function to get formatted datetime for display
+export const getFormattedDateTime = (event: Event) => {
+  const date = new Date(event.date)
+  const startTime = event.startTime
+  const endTime = event.endTime
+  
+  const dateStr = date.toLocaleDateString('nl-NL', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric' 
+  })
+  
+  // Handle end time that goes to next day
+  const endDate = new Date(event.date)
+  if (event.endTime < event.startTime) {
+    endDate.setDate(endDate.getDate() + 1)
+  }
+  
+  const endDateStr = endDate.toLocaleDateString('nl-NL', { 
+    day: 'numeric', 
+    month: 'long', 
+    year: 'numeric' 
+  })
+  
+  return `${dateStr} om ${startTime} – ${endDateStr} om ${endTime}`
 }

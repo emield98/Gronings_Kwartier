@@ -1,10 +1,13 @@
-import { Event } from "@/lib/events"
+import { Event, shouldShowTickets, getFormattedDate, getFormattedDateTime } from "@/lib/events"
 
 interface TicketsSectionProps {
   events: Event[]
 }
 
 export default function TicketsSection({ events }: TicketsSectionProps) {
+  // Only show events with tickets available
+  const availableEvents = events.filter(shouldShowTickets)
+
   return (
     <section id="tickets" className="py-24 bg-gray-900 relative overflow-hidden">
       {/* Background Animation */}
@@ -23,10 +26,24 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
           </span>
         </h2>
 
-        {/* Ticket Cards */}
-        <div className="grid md:grid-cols-1 gap-6 max-w-3xl mx-auto mb-20">
-          {events.map((event, index) => {
-            const [day, month] = event.ticketDate.split(' ')
+        {availableEvents.length === 0 ? (
+          // No tickets available message
+          <div className="text-center max-w-2xl mx-auto">
+            <div className="bg-neutral-800/50 rounded-lg p-12 border border-gray-700">
+              <h3 className="text-2xl font-bold text-white mb-4">No Tickets Available</h3>
+              <p className="text-gray-400 text-lg leading-relaxed">
+                There are currently no tickets available for purchase. 
+                <br />
+                Check back soon or follow us on social media for updates!
+              </p>
+            </div>
+          </div>
+        ) : (
+          // Ticket Cards
+          <div className="grid md:grid-cols-1 gap-6 max-w-3xl mx-auto mb-20">
+          {availableEvents.map((event, index) => {
+            const formattedDate = getFormattedDate(event)
+            const [day, month] = formattedDate.split(' ')
             return (
               <div
                 key={event.id}
@@ -39,9 +56,9 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
                 </div>
                 <div className="p-4 flex-1 text-white">
                   <h3 className="text-xl font-semibold">{event.title}</h3>
-                  <p className="text-sm text-gray-300 mt-1">{event.datetime}</p>
-                  <p className="text-sm mt-4">{event.location}</p>
-                  <p className="text-sm text-gray-400">{event.ticketVenue}</p>
+                  <p className="text-sm text-gray-300 mt-1">{getFormattedDateTime(event)}</p>
+                  <p className="text-sm mt-4">{event.venue}</p>
+                  <p className="text-sm text-gray-400">{event.address}</p>
                   <div className="mt-3 text-xs text-cyan-400">
                     Click to purchase tickets →
                   </div>
@@ -49,7 +66,8 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
               </div>
             )
           })}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   )

@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Clock, MapPin, Home } from "lucide-react"
-import { Event } from "@/lib/events"
+import { Clock, MapPin, Home, Music } from "lucide-react"
+import { Event, shouldShowTickets } from "@/lib/events"
+
 
 interface EventsSectionProps {
   events: Event[]
@@ -42,8 +43,8 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
 
                     {/* Event Details */}
                     <div className="flex-1">
-                      <h3 className="text-2xl md:text-3xl font-black group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-all duration-300 mb-2">
-                        {event.artist}
+                      <h3 className="text-2xl md:text-3xl font-black text-white/80 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-all duration-300 mb-2">
+                        {event.title}
                       </h3>
 
                       <div className="flex flex-col md:flex-row md:items-center gap-4 text-sm">
@@ -69,12 +70,18 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
 
                   {/* Status and Action Section */}
                   <div className="flex items-center space-x-4">
-                    <Button
-                      onClick={() => scrollToSection("tickets")}
-                      className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white px-6 py-2 font-semibold transition-all duration-300 transform hover:scale-105"
-                    >
-                      GET TICKETS
-                    </Button>
+                    {shouldShowTickets(event) ? (
+                      <Button
+                        onClick={() => scrollToSection("tickets")}
+                        className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white px-6 py-2 font-semibold transition-all duration-300 transform hover:scale-105"
+                      >
+                        GET TICKETS
+                      </Button>
+                    ) : (
+                      <div className="px-6 py-2 text-gray-400 font-semibold">
+                        {event.status === 'sold-out' ? 'Tickets sold Out' : 'Tickets coming Soon'}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -82,7 +89,8 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
                 <div className="mt-6 pt-6 border-t border-gray-700/50">
                   <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-400">
                     <div className="flex items-center space-x-6">
-                      <span>🎵 {event.genres.join(' • ')}</span>
+                      <Music size={20} className="text-cyan-400" />
+                      <span>{event.genres.join(' • ')}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <div
