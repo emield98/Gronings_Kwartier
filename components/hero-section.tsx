@@ -48,8 +48,15 @@ export default function HeroSection({ scrollToSection }: HeroSectionProps) {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <ChevronDown size={32} className="text-gray-400" />
+      <div className="absolute bottom-8 left-0 right-0 z-10 animate-bounce">
+        <div className="flex justify-center">
+          <button 
+            onClick={() => scrollToSection("about")}
+            className="flex items-center justify-center w-12 h-12 text-gray-400 hover:text-cyan-400 transition-colors"
+          >
+            <ChevronDown size={32} />
+          </button>
+        </div>
       </div>
     </section>
   )
