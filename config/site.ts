@@ -6,7 +6,7 @@ export const siteConfig = {
   ogImage: "/placeholder.jpg",
   links: {
     instagram: "https://www.instagram.com/groningskwartier",
-    email: "info@groningskwartier.nl"
+    email: "info@gronings-kwartier.nl"
   },
   navigation: ["home", "about", "events", "tickets", "contact"] as const
 }

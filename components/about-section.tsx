@@ -15,7 +15,7 @@ export default function AboutSection() {
               Gronings Kwartier started as a techno party on the island known as Derde Kwartier, near the Hoornseplas in Groningen. What began as a laid-back gathering with friends has since grown into a full-scale event, complete with ticketed entry, a dedicated location, and a growing audience.
             </p>
             <p className="text-lg text-gray-300 leading-relaxed">
-              The festival is organized by a group of friends who all live in Groningen. What connects them is a shared love for electronic music and the energy that comes with organizing something together. Gronings Kwartier keeps that original spirit alive, rooted in community, built with care, and driven by the music.
+              The festival is organized by a group of friends who all live in Groningen. What connects them is a shared love for electronic music and the energy that comes with organizing something together. Gronings Kwartier keeps that original spirit alive, rooted in community, and driven by the music.
             </p>
           </div>
           <div className="relative">
