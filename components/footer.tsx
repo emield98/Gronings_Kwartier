@@ -7,7 +7,7 @@ export default function Footer() {
             <div className="text-2xl font-black tracking-wider">GK</div>
           </div>
           <div className="text-sm text-gray-400">
-            © 2024 Gronings Kwartier. All rights reserved.
+            © 2025 Gronings Kwartier. All rights reserved.
           </div>
         </div>
       </div>
