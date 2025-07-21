@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
-import { ChevronDown, Menu, X, Clock, MapPin, Instagram, Music } from "lucide-react"
+import { ChevronDown, Menu, X, Clock, MapPin, Instagram, Home } from "lucide-react"
 import { events, getUpcomingEvents } from "@/lib/events"
 
 export default function GroningsKwartierWebsite() {
@@ -144,10 +144,10 @@ export default function GroningsKwartierWebsite() {
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <h2 className="text-5xl md:text-6xl font-black mb-8 leading-tight">
-                What is
+                ABOUT
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500">
-                  Gronings Kwartier?
+                  GRONINGS KWARTIER
                 </span>
               </h2>
               <p className="text-lg text-gray-300 leading-relaxed">
@@ -209,14 +209,15 @@ export default function GroningsKwartierWebsite() {
                             <span className="font-mono font-semibold">{event.startTime} - {event.endTime}</span>
                           </div>
                           <div className="flex items-center space-x-2 text-gray-300">
-                            <MapPin size={16} />
+                            <Home size={16} />
                             <span>{event.venue}</span>
                           </div>
                         </div>
 
                         {/* Address */}
-                        <div className="mt-2 text-sm text-gray-400">
-                          📍 {event.address}
+                        <div className="flex mt-2 text-sm text-gray-400">
+                          <MapPin size={16} /> 
+                          <span>{event.address}</span>
                         </div>
                       </div>
                     </div>
@@ -239,16 +240,14 @@ export default function GroningsKwartierWebsite() {
                         <span>🎵 {event.genres.join(' • ')}</span>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <div className={`w-2 h-2 rounded-full animate-pulse ${
-                          event.status === 'tickets-available' ? 'bg-green-500' : 
-                          event.status === 'sold-out' ? 'bg-red-500' : 'bg-yellow-500'
-                        }`} />
-                        <span className={`font-semibold ${
-                          event.status === 'tickets-available' ? 'text-green-400' : 
-                          event.status === 'sold-out' ? 'text-red-400' : 'text-yellow-400'
-                        }`}>
-                          {event.status === 'tickets-available' ? 'Tickets Available' : 
-                           event.status === 'sold-out' ? 'Sold Out' : 'Coming Soon'}
+                        <div className={`w-2 h-2 rounded-full animate-pulse ${event.status === 'tickets-available' ? 'bg-green-500' :
+                            event.status === 'sold-out' ? 'bg-red-500' : 'bg-yellow-500'
+                          }`} />
+                        <span className={`font-semibold ${event.status === 'tickets-available' ? 'text-green-400' :
+                            event.status === 'sold-out' ? 'text-red-400' : 'text-yellow-400'
+                          }`}>
+                          {event.status === 'tickets-available' ? 'Tickets Available' :
+                            event.status === 'sold-out' ? 'Sold Out' : 'Coming Soon'}
                         </span>
                       </div>
                     </div>
@@ -350,9 +349,9 @@ export default function GroningsKwartierWebsite() {
               <div>
                 <h3 className="text-xl font-bold mb-4">Follow us</h3>
                 <div className="flex space-x-4">
-                  <Button 
-                    variant="outline" 
-                    size="icon" 
+                  <Button
+                    variant="outline"
+                    size="icon"
                     className="border-gray-700 hover:bg-gray-800 bg-transparent"
                     onClick={() => window.open('https://www.instagram.com/groningskwartier', '_blank')}
                   >
