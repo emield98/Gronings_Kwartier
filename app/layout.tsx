@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   authors: [{ name: 'Gronings Kwartier', url: 'https://groningskwartier.nl' }],
   creator: 'Gronings Kwartier',
   metadataBase: new URL('https://groningskwartier.nl'),
+  icons: {
+    icon: '/favicon.png',
+    shortcut: '/favicon.png',
+    apple: '/favicon.png',
+  },
   openGraph: {
     title: 'Gronings Kwartier',
     description: 'Festival in Groningen.',
