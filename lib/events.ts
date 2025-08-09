@@ -25,10 +25,10 @@ export const events: Event[] = [
     venue: 'De Huiskamer',
     address: 'Suikerlaan 18, 9743 DA Groningen',
     type: 'night',
-    status: 'coming-soon',
+    status: 'tickets-available',
     description: 'Join us for an unforgettable night of electronic music in the heart of Groningen.',
     genres: ['Electronic', 'Techno', 'House'],
-    ticketUrl: 'https://eventix.io'
+    ticketUrl: 'https://shop.weeztix.com/c7e2a4e0-9ddf-11ef-a9cb-7e126431635e?shop_code=qr9y6we3'
   }
 ]
 
