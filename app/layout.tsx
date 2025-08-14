@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   creator: 'Gronings Kwartier',
   metadataBase: new URL('https://groningskwartier.nl'),
   icons: {
-    icon: '/favicon.png',
-    shortcut: '/favicon.png',
-    apple: '/favicon.png',
+    icon: '/logo.png',
+    shortcut: '/logo.png',
+    apple: '/logo.png',
   },
   openGraph: {
     title: 'Gronings Kwartier',
