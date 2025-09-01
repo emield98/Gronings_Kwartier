@@ -16,12 +16,12 @@ export interface Event {
 
 export const events: Event[] = [
   {
-    id: 'gronings-kwartier-zomereditie-2025',
+    id: 'gronings-kwartier-editie-2025',
     date: '2025-11-08',
     startTime: '20:00',
     endTime: '04:00',
-    title: 'Gronings Kwartier Zomereditie',
-    edition: 'Gronings Kwartier Zomereditie',
+    title: 'Gronings Kwartier',
+    edition: 'Gronings Kwartier',
     venue: 'De Huiskamer',
     address: 'Suikerlaan 18, 9743 DA Groningen',
     type: 'night',
