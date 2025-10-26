@@ -23,13 +23,15 @@ export const metadata: Metadata = {
     locale: 'nl_NL',
     type: 'website',
     // Explicit image(s) for social previews (og:image)
-    images: ['/og-image.svg'],
+    // Provide an SVG for high-quality clients and a PNG fallback for platforms
+    // that don't render SVG (WhatsApp often doesn't) — PNG listed second.
+    images: ['/og-image.svg', '/logo.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Gronings Kwartier',
     description: 'Gronings Kwartier is a techno festival in the heart of Groningen. Join us for an unforgettable experience.',
-    images: ['/og-image.svg'],
+    images: ['/og-image.svg', '/logo.png'],
   },
   other: {
     'instagram:url': 'https://www.instagram.com/groningskwartier',
