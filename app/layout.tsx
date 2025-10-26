@@ -17,8 +17,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: 'Gronings Kwartier',
-    description: 'Festival in Groningen.',
-  url: 'https://gronings-kwartier.nl',
+    description: '8 November 2025 - Huiskamer Groningen',
+  url: 'https://www.gronings-kwartier.nl',
     siteName: 'Gronings Kwartier',
     locale: 'nl_NL',
     type: 'website',
@@ -27,8 +27,8 @@ export const metadata: Metadata = {
     // that don't render SVG (WhatsApp often doesn't) — PNG listed second.
     // Use the existing logo as the primary preview image for maximum compatibility
     images: [
-      'https://gronings-kwartier.nl/logo.png',
-      'https://gronings-kwartier.nl/og-image.svg',
+      'https://www.gronings-kwartier.nl/logo.png',
+      'https://www.gronings-kwartier.nl/og-image.svg',
     ],
   },
   twitter: {
