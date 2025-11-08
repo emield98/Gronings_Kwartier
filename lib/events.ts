@@ -35,7 +35,18 @@ export const events: Event[] = [
 // Helper functions to filter events
 export const getUpcomingEvents = () => {
   const now = new Date()
-  return events.filter(event => new Date(event.date) >= now)
+  // Consider event still upcoming if its end datetime is >= now.
+  // This handles events that occur today (so they don't disappear at 00:00 of the day).
+  return events.filter((event) => {
+    // build start and end datetimes from date + times
+    const start = new Date(`${event.date}T${event.startTime}`)
+    let end = new Date(`${event.date}T${event.endTime}`)
+    // if end time is less than start time assume it ends the next day
+    if (event.endTime < event.startTime) {
+      end.setDate(end.getDate() + 1)
+    }
+    return end >= now
+  })
 }
 
 export const getEventById = (id: string) => {
