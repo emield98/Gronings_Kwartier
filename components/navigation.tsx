@@ -1,9 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Menu, X, Instagram } from "lucide-react"
-import { siteConfig, NavigationSection } from "@/config/site"
+import { siteConfig } from "@/config/site"
+import { useLanguage } from "@/components/language-provider"
+import LanguageSwitcher from "@/components/language-switcher"
+import { cn } from "@/lib/utils"
 
 interface NavigationProps {
   activeSection: string
@@ -12,143 +14,186 @@ interface NavigationProps {
 
 export default function Navigation({ activeSection, scrollToSection }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [scrolled, setScrolled] = useState(false)
+  const { t } = useLanguage()
 
   const handleScrollToSection = (sectionId: string) => {
     scrollToSection(sectionId)
     setIsMenuOpen(false)
   }
 
+  // Thin orange gauge across the top edge, tracking read progress.
+  useEffect(() => {
+    const onScroll = () => {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight
+      setProgress(scrollable > 0 ? Math.min(1, window.scrollY / scrollable) : 0)
+      setScrolled(window.scrollY > 24)
+    }
+
+    onScroll()
+    window.addEventListener("scroll", onScroll, { passive: true })
+    window.addEventListener("resize", onScroll)
+    return () => {
+      window.removeEventListener("scroll", onScroll)
+      window.removeEventListener("resize", onScroll)
+    }
+  }, [])
+
   // Prevent body scroll when menu is open
   useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
-    }
-    
-    // Cleanup on unmount
+    document.body.style.overflow = isMenuOpen ? "hidden" : "unset"
     return () => {
-      document.body.style.overflow = 'unset'
+      document.body.style.overflow = "unset"
     }
+  }, [isMenuOpen])
+
+  // Close the overlay on Escape.
+  useEffect(() => {
+    if (!isMenuOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIsMenuOpen(false)
+    }
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
   }, [isMenuOpen])
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-sm border-b border-gray-800">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center flex-1">
-              <a href="/" aria-label="Home">
-              <img
-                src="/logo.png"
-                alt="GK Logo"
-                className="object-contain h-12 w-auto max-h-16"
-                style={{ maxWidth: "100%" }}
-              />
-              </a>
-            </div>
+      <nav
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-colors duration-300",
+          scrolled
+            ? "border-b border-gk-staal bg-gk-ink/95 backdrop-blur-md"
+            : "border-b border-transparent bg-gradient-to-b from-gk-ink/80 to-transparent",
+        )}
+      >
+        {/* Scroll gauge */}
+        <div aria-hidden="true" className="absolute inset-x-0 top-0 h-[2px] bg-gk-staal/60">
+          <div
+            className="h-full bg-gk-oranje transition-[width] duration-150 ease-out"
+            style={{ width: `${progress * 100}%` }}
+          />
+        </div>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
-              <div className="flex space-x-8">
-                {siteConfig.navigation.map((section) => (
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4">
+          <a href="/" aria-label={t("nav.home.aria")} className="shrink-0">
+            <img
+              src="/logo.png"
+              alt="Gronings Kwartier"
+              className="h-11 w-auto object-contain"
+            />
+          </a>
+
+          {/* Desktop */}
+          <div className="hidden items-center gap-8 md:flex">
+            <div className="flex items-center gap-7">
+              {siteConfig.navigation.map((section) => {
+                const isActive = activeSection === section
+                return (
                   <button
                     key={section}
                     onClick={() => scrollToSection(section)}
-                    className={`text-sm uppercase tracking-wider transition-colors hover:text-cyan-400 ${
-                      activeSection === section ? "text-cyan-400" : "text-gray-300"
-                    }`}
+                    aria-current={isActive ? "true" : undefined}
+                    className={cn(
+                      "relative py-1 font-mono text-[0.7rem] uppercase tracking-plate transition-colors",
+                      isActive ? "text-gk-kalk" : "text-gk-rook hover:text-gk-kalk",
+                    )}
                   >
-                    {section}
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "absolute -top-1 left-0 h-[2px] bg-gk-oranje transition-all duration-300",
+                        isActive ? "w-full" : "w-0",
+                      )}
+                    />
+                    {t(`nav.${section}`)}
                   </button>
-                ))}
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-gray-300 hover:text-cyan-400 hover:bg-transparent border border-gray-700 hover:border-cyan-400 transition-colors"
-                onClick={() => window.open(siteConfig.links.instagram, '_blank')}
-              >
-                <Instagram size={20} />
-              </Button>
+                )
+              })}
             </div>
 
-            {/* Mobile Menu Button */}
-            <button 
-              className="md:hidden relative z-[60] text-white" 
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <a
+                href={siteConfig.links.instagram}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={t("nav.instagram")}
+                className="flex h-8 w-8 items-center justify-center border border-gk-staal text-gk-rook transition-colors hover:border-gk-oranje hover:text-gk-oranje"
+              >
+                <Instagram size={16} />
+              </a>
+            </div>
           </div>
+
+          {/* Mobile trigger */}
+          <button
+            className="relative z-[60] flex h-10 w-10 items-center justify-center border border-gk-staal text-gk-kalk transition-colors hover:border-gk-oranje md:hidden"
+            aria-label={isMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+            aria-expanded={isMenuOpen}
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </nav>
 
-      {/* Mobile Navigation Overlay */}
+      {/* Mobile overlay */}
       {isMenuOpen && (
-        <div 
-          className="md:hidden fixed inset-0 z-[55] bg-black/95 backdrop-blur-sm"
-          onClick={() => setIsMenuOpen(false)}
-        >
-          <div className="flex flex-col items-center justify-center min-h-screen px-6 py-20">
-            {/* Close button at top right */}
-            <button
-              className="absolute top-6 right-6 text-white hover:text-cyan-400 transition-colors z-[56]"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <X size={28} />
-            </button>
+        <div className="fixed inset-0 z-[55] bg-gk-ink md:hidden">
+          <div aria-hidden="true" className="gk-hazard h-2 w-full" />
 
-            <div 
-              className="flex flex-col items-center space-y-8 w-full max-w-sm"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {siteConfig.navigation.map((section, index) => (
-                <button
-                  key={section}
-                  onClick={() => handleScrollToSection(section)}
-                  className={`text-2xl uppercase tracking-wider transition-colors hover:text-cyan-400 text-center ${
-                    activeSection === section ? "text-cyan-400" : "text-white"
-                  }`}
-                  style={{ 
-                    animationDelay: `${index * 100}ms`,
-                    animation: 'fadeInUp 0.5s ease-out forwards'
-                  }}
-                >
-                  {section}
-                </button>
-              ))}
-              
-              <div className="mt-8 pt-8 border-t border-gray-700">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:text-cyan-400 hover:bg-transparent border border-gray-700 hover:border-cyan-400 transition-colors"
-                  onClick={() => {
-                    window.open(siteConfig.links.instagram, '_blank')
-                    setIsMenuOpen(false)
-                  }}
-                >
-                  <Instagram size={24} />
-                </Button>
-              </div>
+          <div className="flex min-h-[calc(100vh-0.5rem)] flex-col justify-between px-6 pb-10 pt-24">
+            <nav className="flex flex-col">
+              {siteConfig.navigation.map((section, index) => {
+                const isActive = activeSection === section
+                return (
+                  <button
+                    key={section}
+                    onClick={() => handleScrollToSection(section)}
+                    style={{ animationDelay: `${index * 60}ms` }}
+                    className={cn(
+                      "group flex items-baseline gap-4 border-b border-gk-staal py-5 text-left",
+                      "animate-in fade-in slide-in-from-bottom-3 fill-mode-both duration-500",
+                    )}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "h-2 w-2 shrink-0 translate-y-[-0.15em] transition-colors",
+                        isActive ? "bg-gk-oranje" : "bg-gk-staal",
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "gk-display text-4xl transition-colors",
+                        isActive ? "text-gk-oranje" : "text-gk-kalk",
+                      )}
+                    >
+                      {t(`nav.${section}`)}
+                    </span>
+                  </button>
+                )
+              })}
+            </nav>
+
+            <div className="flex items-center justify-between gap-4 pt-10">
+              <LanguageSwitcher size="lg" />
+              <a
+                href={siteConfig.links.instagram}
+                target="_blank"
+                rel="noreferrer noopener"
+                aria-label={t("nav.instagram")}
+                onClick={() => setIsMenuOpen(false)}
+                className="flex h-12 w-12 items-center justify-center border border-gk-staal text-gk-kalk transition-colors hover:border-gk-oranje hover:text-gk-oranje"
+              >
+                <Instagram size={22} />
+              </a>
             </div>
           </div>
         </div>
       )}
-
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </>
   )
 }

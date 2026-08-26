@@ -1,72 +1,155 @@
-import { Event, shouldShowTickets, getFormattedDate, getFormattedDateTime } from "@/lib/events"
+"use client"
+
+import { ArrowRight, Instagram } from "lucide-react"
+import {
+  Event,
+  shouldShowTickets,
+  getFormattedDate,
+  getFormattedDateTime,
+  getLongDate,
+} from "@/lib/events"
+import { useLanguage } from "@/components/language-provider"
+import { SectionHeading } from "@/components/section-heading"
+import Reveal from "@/components/reveal"
+import { siteConfig } from "@/config/site"
 
 interface TicketsSectionProps {
   events: Event[]
 }
 
 export default function TicketsSection({ events }: TicketsSectionProps) {
-  // Only show events with tickets available
+  const { language, t } = useLanguage()
+
   const availableEvents = events.filter(shouldShowTickets)
+  const nextEvent = events[0]
 
   return (
-    <section id="tickets" className="py-24 bg-gray-900 relative overflow-hidden">
-      {/* Background Animation */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-cyan-500 rounded-full blur-3xl animate-pulse" />
-        <div
-          className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-purple-500 rounded-full blur-3xl animate-pulse"
-          style={{ animationDelay: '1s' }}
-        />
-      </div>
+    <section
+      id="tickets"
+      className="gk-grain relative overflow-hidden bg-gk-ink py-24 md:py-32"
+    >
+      <div className="relative z-10 mx-auto max-w-5xl px-6">
+        <Reveal>
+          <SectionHeading plate={t("tickets.plate")} title={t("tickets.title")} />
+        </Reveal>
 
-      <div className="container mx-auto px-6 relative z-10">
-        <h2 className="text-5xl md:text-6xl font-black text-center mb-16">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
-            TICKETS
-          </span>
-        </h2>
+        {availableEvents.length > 0 ? (
+          <div className="mt-12 flex flex-col gap-5">
+            {availableEvents.map((event, index) => {
+              const [day, month] = getFormattedDate(event, language).split(" ")
+              return (
+                <Reveal key={event.id} delay={index * 90}>
+                  <a
+                    href={event.ticketUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="group flex border border-gk-staal bg-gk-beton transition-colors duration-300 hover:border-gk-oranje"
+                  >
+                    {/* Stub */}
+                    <div className="flex w-24 shrink-0 flex-col items-center justify-center border-r border-dashed border-gk-staal bg-gk-oranje px-3 py-6 text-gk-ink sm:w-28">
+                      <span className="gk-tnum font-display text-4xl font-black leading-none">
+                        {day}
+                      </span>
+                      <span className="mt-1 font-mono text-[0.65rem] uppercase tracking-plate">
+                        {month}
+                      </span>
+                    </div>
 
-        {availableEvents.length === 0 ? (
-          // No tickets available message
-          <div className="text-center max-w-2xl mx-auto">
-            <div className="bg-neutral-800/50 rounded-lg p-12 border border-gray-700">
-              <h3 className="text-2xl font-bold text-white mb-4">No Tickets Available</h3>
-              <p className="text-gray-400 text-lg leading-relaxed">
-                There are currently no tickets available for purchase. 
-                <br />
-                Check back soon or follow us on social media for updates!
-              </p>
-            </div>
+                    <div className="min-w-0 flex-1 px-6 py-6">
+                      <h3 className="gk-display text-2xl text-gk-kalk transition-colors group-hover:text-gk-oranje">
+                        {event.title}
+                      </h3>
+                      <p className="gk-tnum mt-2 font-mono text-xs text-gk-rook">
+                        {getFormattedDateTime(event, language, t("tickets.dateTimeJoin"))}
+                      </p>
+                      <p className="mt-4 text-sm text-gk-kalk">{event.venue}</p>
+                      <p className="text-sm text-gk-rook">{event.address}</p>
+                      <span className="mt-5 inline-flex items-center gap-2 font-mono text-[0.65rem] font-bold uppercase tracking-plate text-gk-oranje">
+                        {t("tickets.cta")}
+                        <ArrowRight
+                          size={13}
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        />
+                      </span>
+                    </div>
+                  </a>
+                </Reveal>
+              )
+            })}
           </div>
-        ) : (
-          // Ticket Cards
-          <div className="grid md:grid-cols-1 gap-6 max-w-3xl mx-auto mb-20">
-          {availableEvents.map((event, index) => {
-            const formattedDate = getFormattedDate(event)
-            const [day, month] = formattedDate.split(' ')
-            return (
-              <div
-                key={event.id}
-                className="flex bg-neutral-800 rounded-lg overflow-hidden shadow-lg transition hover:scale-[1.01] cursor-pointer"
-                onClick={() => window.open(event.ticketUrl, '_blank')}
-              >
-                <div className="bg-[#2d384d] text-center px-4 py-6 flex flex-col justify-center w-24">
-                  <span className="text-3xl font-bold text-white">{day}</span>
-                  <span className="uppercase text-gray-300">{month}</span>
+        ) : nextEvent ? (
+          // Sale has not opened yet — a deliberate state, not an empty one.
+          <Reveal delay={100}>
+            <div className="gk-bracket mt-12 border border-gk-staal bg-gk-beton">
+              <div aria-hidden="true" className="gk-hazard h-2 w-full" />
+
+              <div className="grid gap-10 p-8 md:grid-cols-5 md:p-12">
+                <div className="md:col-span-3">
+                  <h3 className="gk-display text-[clamp(2rem,6vw,3.25rem)] text-gk-kalk">
+                    {nextEvent.status === "sold-out"
+                      ? t("tickets.empty.title")
+                      : t("tickets.soon.title")}
+                  </h3>
+                  <p className="mt-5 max-w-prose leading-relaxed text-gk-rook">
+                    {t("tickets.soon.body", { date: getLongDate(nextEvent, language) })}
+                  </p>
+                  <a
+                    href={siteConfig.links.instagram}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="group mt-8 inline-flex items-center gap-3 bg-gk-oranje px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk"
+                  >
+                    <Instagram size={15} />
+                    {t("tickets.soon.cta")}
+                  </a>
                 </div>
-                <div className="p-4 flex-1 text-white">
-                  <h3 className="text-xl font-semibold">{event.title}</h3>
-                  <p className="text-sm text-gray-300 mt-1">{getFormattedDateTime(event)}</p>
-                  <p className="text-sm mt-4">{event.venue}</p>
-                  <p className="text-sm text-gray-400">{event.address}</p>
-                  <div className="mt-3 text-xs text-cyan-400">
-                    Click to purchase tickets →
+
+                {/* Blank stub — the ticket that does not exist yet */}
+                <div className="md:col-span-2">
+                  <div className="flex h-full flex-col justify-between border border-dashed border-gk-staal p-6">
+                    <div>
+                      <span className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                        {nextEvent.title}
+                      </span>
+                      <p className="gk-tnum mt-4 font-display text-5xl font-black leading-none text-gk-rook/60">
+                        {getLongDate(nextEvent, language).split(" ")[0]}
+                      </p>
+                      <p className="mt-2 font-mono text-sm uppercase tracking-plate text-gk-rook/60">
+                        {getLongDate(nextEvent, language).split(" ").slice(1).join(" ")}
+                      </p>
+                    </div>
+                    <dl className="mt-8 space-y-3 border-t border-gk-staal pt-5">
+                      <div>
+                        <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                          {t("hero.venue")}
+                        </dt>
+                        <dd className="mt-1 text-sm text-gk-kalk">{nextEvent.venue}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                          {t("hero.doors")}
+                        </dt>
+                        <dd className="gk-tnum mt-1 font-mono text-sm text-gk-kalk">
+                          {nextEvent.startTime} – {nextEvent.endTime}
+                        </dd>
+                      </div>
+                    </dl>
                   </div>
                 </div>
               </div>
-            )
-          })}
-          </div>
+            </div>
+          </Reveal>
+        ) : (
+          <Reveal delay={100}>
+            <div className="mt-12 border border-gk-staal bg-gk-beton p-10 text-center">
+              <h3 className="gk-display text-3xl text-gk-kalk">{t("tickets.empty.title")}</h3>
+              <p className="mt-4 text-gk-rook">
+                {t("tickets.empty.line1")}
+                <br />
+                {t("tickets.empty.line2")}
+              </p>
+            </div>
+          </Reveal>
         )}
       </div>
     </section>

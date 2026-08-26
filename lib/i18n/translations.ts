@@ -1,0 +1,222 @@
+import type { Language } from "./config"
+
+// Gronings (Grunnegs) — the default language of the site.
+const gos = {
+  "nav.home": "Thoes",
+  "nav.about": "Over ons",
+  "nav.events": "Agenda",
+  "nav.tickets": "Koartjes",
+  "nav.contact": "Contact",
+
+  "nav.instagram": "Volg ons op Instagram",
+  "nav.openMenu": "Menu lös doun",
+  "nav.closeMenu": "Menu dichtdoun",
+  "nav.home.aria": "Noar t begun",
+
+  "language.label": "Toal",
+  "language.switchTo": "Wissel noar",
+
+  "hero.edition": "Editie {edition}",
+  "hero.cta": "Hoal koartjes",
+  "hero.cta.comingSoon": "Koartjes binnenkört",
+  "hero.cta.soldOut": "Uutverkocht",
+  "hero.scroll": "Noar beneden scrollen",
+  "hero.doors": "Deuren lös",
+  "hero.venue": "Stee",
+
+  "countdown.title": "Tot de deuren lös goan",
+  "countdown.days": "Doagen",
+  "countdown.hours": "Uren",
+  "countdown.minutes": "Minuten",
+  "countdown.seconds": "Sekonden",
+  "countdown.live": "t Is zoveer — deuren binnen lös",
+
+  "about.plate": "Techno in Grunnen",
+  "about.statement.line1": "N KWARTIER",
+  "about.statement.line2": "DUURT HIER",
+  "about.statement.line3": "N HAILE NACHT",
+  "about.sub": "Sinds t Derde Kwartier.",
+  "about.data.city": "Stad",
+  "about.data.city.value": "Grunnen",
+  "about.data.music": "Muziek",
+  "about.data.next": "Kommende editie",
+
+  "events.plate": "Wat der aankomt",
+  "events.title": "AGENDA",
+  "events.cta": "Hoal koartjes",
+  "events.cta.soldOut": "Uutverkocht",
+  "events.cta.comingSoon": "Binnenkört",
+  "events.doors": "Deuren",
+  "events.venue": "Stee",
+  "events.music": "Muziek",
+  "events.status.available": "Koartjes beschikboar",
+  "events.status.soldOut": "Uutverkocht",
+  "events.status.comingSoon": "Verkoop nog nait lös",
+  "events.empty": "Der stoan even gain doatums op de rol. Volg ons op Instagram veur nijs.",
+
+  "tickets.plate": "Toegang",
+  "tickets.title": "KOARTJES",
+  "tickets.soon.title": "Koartjes binnenkört",
+  "tickets.soon.body":
+    "De koartverkoop veur {date} is nog nait lös. Volg ons op Instagram, den waist doe t as eerste.",
+  "tickets.soon.cta": "Volg op Instagram",
+  "tickets.empty.title": "Gain koartjes beschikboar",
+  "tickets.empty.line1": "Der binnen op t mement gain koartjes te koop.",
+  "tickets.empty.line2": "Kom gaauw weerom of volg ons op Instagram veur nijs!",
+  "tickets.cta": "Klik om koartjes te kopen",
+  "tickets.dateTimeJoin": "om",
+
+  "contact.plate": "Neem contact op",
+  "contact.title": "CONTACT",
+  "contact.form.name": "Noam",
+  "contact.form.email": "E-mail",
+  "contact.form.message": "Bericht",
+  "contact.form.send": "Stuur bericht",
+  "contact.subject": "Nij bericht van {name} - Gronings Kwartier",
+  "contact.getInTouch.title": "Neem contact op",
+  "contact.getInTouch.body":
+    "Vroagen over t festival? Wil ie partner worden? Wie heuren geern van die.",
+  "contact.followUs.title": "Volg ons",
+  "contact.toast.sent.title": "Bericht verstuurd",
+  "contact.toast.sent.body": "Wie nemen zo gaauw as t kin contact mit die op.",
+  "contact.toast.error.title": "Der ging wat mis",
+  "contact.toast.error.body": "Perbaaier t loater nog es.",
+  "contact.toast.network.title": "Der ging wat mis",
+  "contact.toast.network.body": "Bericht kon nait verstuurd worden. Kiek dien verbinden noa.",
+
+  "footer.rights": "© {year} Gronings Kwartier. Alle rechten veurbeholden.",
+  "footer.venue": "Stee editie",
+} as const
+
+export type TranslationKey = keyof typeof gos
+
+const nl: Record<TranslationKey, string> = {
+  "nav.home": "Home",
+  "nav.about": "Over ons",
+  "nav.events": "Agenda",
+  "nav.tickets": "Tickets",
+  "nav.contact": "Contact",
+
+  "nav.instagram": "Volg ons op Instagram",
+  "nav.openMenu": "Menu openen",
+  "nav.closeMenu": "Menu sluiten",
+  "nav.home.aria": "Naar het begin",
+
+  "language.label": "Taal",
+  "language.switchTo": "Wissel naar",
+
+  "hero.edition": "Editie {edition}",
+  "hero.cta": "Koop tickets",
+  "hero.cta.comingSoon": "Tickets binnenkort",
+  "hero.cta.soldOut": "Uitverkocht",
+  "hero.scroll": "Naar beneden scrollen",
+  "hero.doors": "Deuren open",
+  "hero.venue": "Locatie",
+
+  "countdown.title": "Tot de deuren opengaan",
+  "countdown.days": "Dagen",
+  "countdown.hours": "Uren",
+  "countdown.minutes": "Minuten",
+  "countdown.seconds": "Seconden",
+  "countdown.live": "Het is zover — de deuren zijn open",
+
+  "about.plate": "Techno in Groningen",
+  "about.statement.line1": "EEN KWARTIER",
+  "about.statement.line2": "DUURT HIER",
+  "about.statement.line3": "EEN HELE NACHT",
+  "about.sub": "Sinds het Derde Kwartier.",
+  "about.data.city": "Stad",
+  "about.data.city.value": "Groningen",
+  "about.data.music": "Muziek",
+  "about.data.next": "Volgende editie",
+
+  "events.plate": "Wat eraan komt",
+  "events.title": "AGENDA",
+  "events.cta": "Koop tickets",
+  "events.cta.soldOut": "Uitverkocht",
+  "events.cta.comingSoon": "Binnenkort",
+  "events.doors": "Deuren",
+  "events.venue": "Locatie",
+  "events.music": "Muziek",
+  "events.status.available": "Tickets beschikbaar",
+  "events.status.soldOut": "Uitverkocht",
+  "events.status.comingSoon": "Verkoop nog niet open",
+  "events.empty": "Er staan even geen data gepland. Volg ons op Instagram voor nieuws.",
+
+  "tickets.plate": "Toegang",
+  "tickets.title": "TICKETS",
+  "tickets.soon.title": "Tickets binnenkort",
+  "tickets.soon.body":
+    "De ticketverkoop voor {date} is nog niet geopend. Volg ons op Instagram, dan weet je het als eerste.",
+  "tickets.soon.cta": "Volg op Instagram",
+  "tickets.empty.title": "Geen tickets beschikbaar",
+  "tickets.empty.line1": "Er zijn op dit moment geen tickets te koop.",
+  "tickets.empty.line2": "Kom snel terug of volg ons op Instagram voor nieuws!",
+  "tickets.cta": "Klik om tickets te kopen",
+  "tickets.dateTimeJoin": "om",
+
+  "contact.plate": "Neem contact op",
+  "contact.title": "CONTACT",
+  "contact.form.name": "Naam",
+  "contact.form.email": "E-mail",
+  "contact.form.message": "Bericht",
+  "contact.form.send": "Verstuur bericht",
+  "contact.subject": "Nieuw bericht van {name} - Gronings Kwartier",
+  "contact.getInTouch.title": "Neem contact op",
+  "contact.getInTouch.body":
+    "Vragen over het festival? Wil je partner worden? We horen graag van je.",
+  "contact.followUs.title": "Volg ons",
+  "contact.toast.sent.title": "Bericht verstuurd",
+  "contact.toast.sent.body": "We nemen zo snel mogelijk contact met je op.",
+  "contact.toast.error.title": "Er ging iets mis",
+  "contact.toast.error.body": "Probeer het later nog eens.",
+  "contact.toast.network.title": "Er ging iets mis",
+  "contact.toast.network.body":
+    "Bericht kon niet verstuurd worden. Controleer je verbinding.",
+
+  "footer.rights": "© {year} Gronings Kwartier. Alle rechten voorbehouden.",
+  "footer.venue": "Locatie editie",
+}
+
+export const translations: Record<Language, Record<TranslationKey, string>> = {
+  gos,
+  nl,
+}
+
+// Month names per language. Intl has no Gronings locale, so they are spelled out.
+export const monthNames: Record<Language, { long: string[]; short: string[] }> = {
+  gos: {
+    long: [
+      "jannewoari",
+      "feberwoari",
+      "meert",
+      "april",
+      "mai",
+      "juni",
+      "juli",
+      "augustus",
+      "september",
+      "oktober",
+      "november",
+      "december",
+    ],
+    short: ["jan", "feb", "mrt", "apr", "mai", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
+  },
+  nl: {
+    long: [
+      "januari",
+      "februari",
+      "maart",
+      "april",
+      "mei",
+      "juni",
+      "juli",
+      "augustus",
+      "september",
+      "oktober",
+      "november",
+      "december",
+    ],
+    short: ["jan", "feb", "mrt", "apr", "mei", "jun", "jul", "aug", "sep", "okt", "nov", "dec"],
+  },
+}

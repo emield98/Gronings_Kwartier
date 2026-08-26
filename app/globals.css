@@ -2,93 +2,204 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    /* ── Suikerfabriek palette ─────────────────────────────────────────
+       The venue sits on the old sugar-factory terrain at Suikerlaan 18.
+       Raw concrete, cold steel, lime dust, and safety orange.           */
+    --gk-ink: 5 5 6;
+    --gk-beton: 14 15 17;
+    --gk-staal: 34 38 43;
+    --gk-rook: 133 140 148;
+    --gk-kalk: 237 233 225;
+    --gk-oranje: 255 90 0;
+    --gk-geel: 255 195 0;
+
+    /* shadcn tokens, retuned to the palette above. The site is dark-only,
+       so the light scheme is simply not defined. */
+    --background: 240 9% 2%;
+    --foreground: 40 25% 91%;
+    --card: 220 10% 6%;
+    --card-foreground: 40 25% 91%;
+    --popover: 220 10% 6%;
+    --popover-foreground: 40 25% 91%;
+    --primary: 21 100% 50%;
+    --primary-foreground: 240 9% 2%;
+    --secondary: 213 12% 15%;
+    --secondary-foreground: 40 25% 91%;
+    --muted: 213 12% 15%;
+    --muted-foreground: 210 6% 55%;
+    --accent: 21 100% 50%;
+    --accent-foreground: 240 9% 2%;
+    --destructive: 4 78% 52%;
+    --destructive-foreground: 40 25% 91%;
+    --border: 213 12% 15%;
+    --input: 213 12% 15%;
+    --ring: 21 100% 50%;
+    --radius: 0px;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Clear the fixed nav when jumping to a section. */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    @apply bg-gk-ink text-gk-kalk font-sans antialiased;
+  }
+
+  ::selection {
+    background-color: rgb(var(--gk-oranje));
+    color: rgb(var(--gk-ink));
+  }
+
+  /* One visible focus treatment for the whole site. */
+  :focus-visible {
+    outline: 2px solid rgb(var(--gk-oranje));
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* ── Signage plate: the small mono label that titles every section ── */
+  .gk-plate {
+    @apply inline-flex items-center gap-3 font-mono text-[0.65rem] uppercase tracking-plate text-gk-rook;
+  }
+
+  .gk-plate::before {
+    content: "";
+    @apply block h-[0.6rem] w-[3px] bg-gk-oranje;
+  }
+
+  /* ── Hazard tape ─────────────────────────────────────────────────── */
+  .gk-hazard {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgb(var(--gk-oranje)) 0 14px,
+      rgb(var(--gk-ink)) 14px 28px
+    );
+    background-size: 56px 100%;
+  }
+
+  .gk-hazard-dim {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      rgb(var(--gk-staal)) 0 14px,
+      rgb(var(--gk-ink)) 14px 28px
+    );
+    background-size: 56px 100%;
+  }
+
+  /* ── Steel frame with corner brackets ────────────────────────────── */
+  .gk-bracket {
+    position: relative;
+  }
+
+  .gk-bracket::before,
+  .gk-bracket::after {
+    content: "";
+    position: absolute;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgb(var(--gk-oranje));
+    pointer-events: none;
+  }
+
+  .gk-bracket::before {
+    top: -2px;
+    left: -2px;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .gk-bracket::after {
+    right: -2px;
+    bottom: -2px;
+    border-left: 0;
+    border-top: 0;
+  }
+
+  /* ── Concrete grain overlay ──────────────────────────────────────── */
+  .gk-grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.2;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+  }
+
+  /* ── Room texture: scanlines and a hard vignette ─────────────────── */
+  .gk-scanlines {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 0.5) 0 1px,
+      transparent 1px 3px
+    );
+  }
+
+  .gk-vignette {
+    background: radial-gradient(
+      ellipse 85% 70% at 50% 45%,
+      transparent 0%,
+      rgb(var(--gk-ink) / 0.55) 62%,
+      rgb(var(--gk-ink) / 0.95) 100%
+    );
+  }
+
+  /* ── Scroll reveal ───────────────────────────────────────────────── */
+  .gk-reveal {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .gk-reveal[data-visible="true"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
-}
 
-@layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 0 0% 96.1%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 0 0% 96.1%;
-    --accent-foreground: 0 0% 9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 0 0% 3.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+  /* Condensed display setting used for the big stencil headlines. */
+  .gk-display {
+    @apply font-display font-black uppercase leading-[0.85] tracking-[-0.01em];
   }
-  .dark {
-    --background: 0 0% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 0 0% 9%;
-    --secondary: 0 0% 14.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 14.9%;
-    --input: 0 0% 14.9%;
-    --ring: 0 0% 83.1%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+
+  .gk-tnum {
+    font-variant-numeric: tabular-nums;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  body {
-    @apply bg-background text-foreground;
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .gk-reveal {
+    opacity: 1;
+    transform: none;
   }
 }

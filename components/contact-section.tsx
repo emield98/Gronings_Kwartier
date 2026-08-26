@@ -1,125 +1,165 @@
 "use client"
 
+import { useRef, useState } from "react"
+import { Instagram, Mail, ArrowRight } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Instagram } from "lucide-react"
 import { siteConfig } from "@/config/site"
-import { useRef } from "react"
+import { useLanguage } from "@/components/language-provider"
+import { SectionHeading } from "@/components/section-heading"
+import Reveal from "@/components/reveal"
+
+const FIELD_CLASS =
+  "w-full border border-gk-staal bg-gk-beton px-4 py-3 text-sm text-gk-kalk placeholder:text-gk-staal transition-colors focus:border-gk-oranje focus:outline-none"
+
+const LABEL_CLASS =
+  "block font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook"
 
 export default function ContactSection() {
   const { toast } = useToast()
+  const { t } = useLanguage()
   const formRef = useRef<HTMLFormElement>(null)
+  const [sending, setSending] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const form = e.currentTarget
     const formData = new FormData(form)
-    
-    // Get the name from the form data to include in subject
-    const name = formData.get('name') as string
-    formData.set('_subject', `New message from ${name} - Gronings Kwartier`)
-    
+
+    const name = formData.get("name") as string
+    formData.set("_subject", t("contact.subject", { name }))
+
+    setSending(true)
     try {
       const res = await fetch("https://formsubmit.co/ajax/groningskwartierevents@gmail.com", {
         method: "POST",
         body: formData,
-        headers: {
-          Accept: "application/json",
-        },
+        headers: { Accept: "application/json" },
       })
 
       if (res.ok) {
         toast({
-          title: "Message sent",
-          description: "We’ll get back to you as soon as possible.",
+          title: t("contact.toast.sent.title"),
+          description: t("contact.toast.sent.body"),
         })
         form.reset()
       } else {
         toast({
-          title: "Error",
-          description: "Something went wrong. Try again later.",
+          title: t("contact.toast.error.title"),
+          description: t("contact.toast.error.body"),
           variant: "destructive",
         })
       }
     } catch (err) {
       toast({
-        title: "Error",
-        description: "Could not send message. Check your connection.",
+        title: t("contact.toast.network.title"),
+        description: t("contact.toast.network.body"),
         variant: "destructive",
       })
+    } finally {
+      setSending(false)
     }
   }
 
   return (
-    <section id="contact" className="py-24 bg-black">
-      <div className="container mx-auto px-6">
-        <h2 className="text-5xl md:text-6xl font-black text-center mb-16">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-cyan-500">
-            CONTACT
-          </span>
-        </h2>
+    <section id="contact" className="gk-grain relative overflow-hidden bg-gk-beton py-24 md:py-32">
+      <div className="relative z-10 mx-auto max-w-6xl px-6">
+        <Reveal>
+          <SectionHeading plate={t("contact.plate")} title={t("contact.title")} />
+        </Reveal>
 
-        <div className="grid md:grid-cols-2 gap-16 max-w-4xl mx-auto">
-          <div>
-            <form
-              ref={formRef}
-              onSubmit={handleSubmit}
-              className="space-y-6"
-            >
+        <div className="mt-14 grid gap-14 md:grid-cols-12 md:gap-16">
+          <Reveal delay={80} className="md:col-span-7">
+            <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
               <input type="hidden" name="_captcha" value="false" />
               <input type="hidden" name="_template" value="box" />
 
-              <Input
-                name="name"
-                placeholder="Name"
-                required
-                className="bg-gray-900/50 border-gray-800 text-white placeholder-gray-400 h-12"
-              />
-              <Input
-                name="email"
-                type="email"
-                placeholder="Email"
-                required
-                className="bg-gray-900/50 border-gray-800 text-white placeholder-gray-400 h-12"
-              />
-              <Textarea
-                name="message"
-                placeholder="Message"
-                rows={10}
-                required
-                className="bg-gray-900/50 border-gray-800 text-white placeholder-gray-400 resize-none"
-              />
-              <Button className="w-full bg-gradient-to-r from-green-500 to-cyan-600 hover:from-green-600 hover:to-cyan-700 h-12 font-semibold">
-                SEND MESSAGE
-              </Button>
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label htmlFor="contact-name" className={LABEL_CLASS}>
+                    {t("contact.form.name")}
+                  </label>
+                  <input
+                    id="contact-name"
+                    name="name"
+                    required
+                    autoComplete="name"
+                    className={`${FIELD_CLASS} mt-2`}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="contact-email" className={LABEL_CLASS}>
+                    {t("contact.form.email")}
+                  </label>
+                  <input
+                    id="contact-email"
+                    name="email"
+                    type="email"
+                    required
+                    autoComplete="email"
+                    className={`${FIELD_CLASS} mt-2`}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="contact-message" className={LABEL_CLASS}>
+                  {t("contact.form.message")}
+                </label>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  rows={8}
+                  required
+                  className={`${FIELD_CLASS} mt-2 resize-none`}
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={sending}
+                className="group inline-flex items-center gap-3 bg-gk-oranje px-7 py-4 font-mono text-xs font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {t("contact.form.send")}
+                <ArrowRight
+                  size={15}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </button>
             </form>
-          </div>
+          </Reveal>
 
-          <div className="space-y-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">Get in touch</h3>
-              <p className="text-gray-400 mb-6">
-                Questions about the festival? Want to become a partner? We'd love to hear from you.
-              </p>
-              <div className="text-cyan-400 font-mono">{siteConfig.links.email}</div>
-            </div>
-
-            <div>
-              <h3 className="text-xl font-bold mb-4">Follow us</h3>
-              <div className="flex space-x-4">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="border-gray-700 hover:bg-gray-800 bg-transparent hover:border-cyan-400 transition-colors"
-                  onClick={() => window.open(siteConfig.links.instagram, '_blank')}
+          <Reveal delay={160} className="md:col-span-5">
+            <div className="border border-gk-staal">
+              <div className="border-b border-gk-staal p-6">
+                <h3 className="gk-display text-2xl text-gk-kalk">
+                  {t("contact.getInTouch.title")}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-gk-rook">
+                  {t("contact.getInTouch.body")}
+                </p>
+                <a
+                  href={`mailto:${siteConfig.links.email}`}
+                  className="mt-5 inline-flex items-center gap-2.5 font-mono text-sm text-gk-oranje transition-colors hover:text-gk-kalk"
                 >
-                  <Instagram size={20} />
-                </Button>
+                  <Mail size={15} />
+                  {siteConfig.links.email}
+                </a>
+              </div>
+
+              <div className="p-6">
+                <span className={LABEL_CLASS}>{t("contact.followUs.title")}</span>
+                <a
+                  href={siteConfig.links.instagram}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  aria-label={t("nav.instagram")}
+                  className="mt-3 inline-flex h-11 w-11 items-center justify-center border border-gk-staal text-gk-kalk transition-colors hover:border-gk-oranje hover:text-gk-oranje"
+                >
+                  <Instagram size={18} />
+                </a>
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>

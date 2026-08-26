@@ -1,23 +1,82 @@
+"use client"
+
+import { Instagram } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
+import { siteConfig } from "@/config/site"
+import { getUpcomingEvents, getLongDate, getMapsUrl } from "@/lib/events"
+
 export default function Footer() {
+  const { language, t } = useLanguage()
+  const nextEvent = getUpcomingEvents()[0]
+
   return (
-    <footer className="py-12 bg-gray-900 border-t border-gray-800">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between">
-          <div className="flex items-center space-x-4 mb-4 md:mb-0">
-            <div className="flex items-center flex-1">
-              <a href="/" aria-label="Home">
-              <img
-                src="/logo.png"
-                alt="GK Logo"
-                className="object-contain h-12 w-auto max-h-16"
-                style={{ maxWidth: "100%" }}
-              />
-              </a>
+    <footer className="bg-gk-ink">
+      <div aria-hidden="true" className="gk-hazard h-2 w-full" />
+
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+          <div className="shrink-0">
+            <a href="/" aria-label={t("nav.home.aria")} className="inline-block">
+              <img src="/logo.png" alt={siteConfig.name} className="h-12 w-auto object-contain" />
+            </a>
+            {nextEvent && (
+              <p className="mt-5 max-w-[16rem]">
+                <span className="gk-display block text-2xl text-gk-kalk">{siteConfig.name}</span>
+                <span className="mt-1 block font-mono text-xs uppercase tracking-plate text-gk-oranje">
+                  {getLongDate(nextEvent, language)}
+                </span>
+              </p>
+            )}
+          </div>
+
+          <div className="grid gap-8 sm:grid-cols-2 md:gap-16">
+            {nextEvent && (
+              <div>
+                <span className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                  {t("footer.venue")}
+                </span>
+                <a
+                  href={getMapsUrl(nextEvent)}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="mt-3 block text-sm leading-relaxed text-gk-kalk transition-colors hover:text-gk-oranje"
+                >
+                  {nextEvent.venue}
+                  <br />
+                  {nextEvent.address}
+                </a>
+              </div>
+            )}
+
+            <div>
+              <span className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                {t("contact.followUs.title")}
+              </span>
+              <div className="mt-3 flex flex-col items-start gap-3">
+                <a
+                  href={siteConfig.links.instagram}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center gap-2.5 text-sm text-gk-kalk transition-colors hover:text-gk-oranje"
+                >
+                  <Instagram size={15} />
+                  @groningskwartier
+                </a>
+                <a
+                  href={`mailto:${siteConfig.links.email}`}
+                  className="font-mono text-sm text-gk-rook transition-colors hover:text-gk-oranje"
+                >
+                  {siteConfig.links.email}
+                </a>
+              </div>
             </div>
           </div>
-          <div className="text-sm text-gray-400">
-            © 2025 Gronings Kwartier. All rights reserved.
-          </div>
+        </div>
+
+        <div className="mt-12 border-t border-gk-staal pt-6">
+          <p className="font-mono text-[0.65rem] uppercase tracking-plate text-gk-rook">
+            {t("footer.rights", { year: String(new Date().getFullYear()) })}
+          </p>
         </div>
       </div>
     </footer>

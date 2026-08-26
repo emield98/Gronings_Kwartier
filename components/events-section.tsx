@@ -1,129 +1,148 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Clock, MapPin, Home, Music } from "lucide-react"
-import { Event, shouldShowTickets } from "@/lib/events"
+"use client"
 
+import { ArrowRight, MapPin } from "lucide-react"
+import { Event, shouldShowTickets, getShortMonth } from "@/lib/events"
+import { useLanguage } from "@/components/language-provider"
+import { SectionHeading } from "@/components/section-heading"
+import Reveal from "@/components/reveal"
+import { cn } from "@/lib/utils"
 
 interface EventsSectionProps {
   events: Event[]
   scrollToSection: (sectionId: string) => void
 }
 
+// Signal colours: orange = on sale, yellow = waiting, steel = closed.
+const STATUS_STYLE: Record<Event["status"], { dot: string; text: string }> = {
+  "tickets-available": { dot: "bg-gk-oranje", text: "text-gk-oranje" },
+  "coming-soon": { dot: "bg-gk-geel", text: "text-gk-geel" },
+  "sold-out": { dot: "bg-gk-rook", text: "text-gk-rook" },
+}
+
 export default function EventsSection({ events, scrollToSection }: EventsSectionProps) {
+  const { language, t } = useLanguage()
+
+  const statusLabel = (status: Event["status"]) =>
+    status === "tickets-available"
+      ? t("events.status.available")
+      : status === "sold-out"
+        ? t("events.status.soldOut")
+        : t("events.status.comingSoon")
+
   return (
-    <section id="events" className="py-24 bg-black">
-      <div className="container mx-auto px-6">
-        <h2 className="text-5xl md:text-6xl font-black text-center mb-16">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
-            EVENTS
-          </span>
-        </h2>
+    <section id="events" className="gk-grain relative overflow-hidden bg-gk-beton py-24 md:py-32">
+      <div className="relative z-10 mx-auto max-w-6xl px-6">
+        <Reveal>
+          <SectionHeading plate={t("events.plate")} title={t("events.title")} />
+        </Reveal>
 
-        <div className="grid gap-6 max-w-6xl mx-auto">
-          {events.map((event, index) => (
-            <Card
-              key={event.id}
-              className="bg-gradient-to-r from-gray-900/90 to-gray-800/90 border border-gray-700 hover:border-cyan-400/50 transition-all duration-500 group backdrop-blur-sm"
-            >
-              <CardContent className="p-8">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  {/* Date and Time Section */}
-                  <div className="flex items-center space-x-8">
-                    <div className="text-center bg-gradient-to-br from-cyan-500/20 to-purple-500/20 p-4 rounded-lg border border-cyan-400/30">
-                      <div className="text-xs text-cyan-400 uppercase tracking-wider font-semibold">
-                        {new Date(event.date).toLocaleDateString("en-US", { month: "short" })}
-                      </div>
-                      <div className="text-3xl font-black text-white">
-                        {new Date(event.date).getDate()}
-                      </div>
-                      <div className="text-xs text-gray-400">
-                        {new Date(event.date).toLocaleDateString("en-US", { year: "numeric" })}
-                      </div>
-                    </div>
+        {events.length === 0 ? (
+          <Reveal delay={100}>
+            <p className="mt-12 max-w-prose text-gk-rook">{t("events.empty")}</p>
+          </Reveal>
+        ) : (
+          <div className="mt-12 flex flex-col gap-5">
+            {events.map((event, index) => {
+              const signal = STATUS_STYLE[event.status]
+              const date = new Date(event.date)
 
-                    {/* Event Details */}
-                    <div className="flex-1">
-                      <h3 className="text-2xl md:text-3xl font-black text-white/80 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-purple-500 transition-all duration-300 mb-2">
-                        {event.title}
-                      </h3>
-
-                      <div className="flex flex-col md:flex-row md:items-center gap-4 text-sm">
-                        <div className="flex items-center space-x-2 text-cyan-400">
-                          <Clock size={16} />
-                          <span className="font-mono font-semibold">
-                            {event.startTime} - {event.endTime}
+              return (
+                <Reveal key={event.id} delay={index * 90}>
+                  <article className="group border border-gk-staal bg-gk-beton/60 transition-colors duration-300 hover:border-gk-oranje/60">
+                    <div className="flex flex-col sm:flex-row">
+                      {/* Stamped date plate */}
+                      <div className="flex shrink-0 items-center gap-4 border-b border-gk-staal px-6 py-5 sm:w-32 sm:flex-col sm:items-start sm:justify-center sm:gap-0 sm:border-b-0 sm:border-r sm:py-7">
+                        <span className="gk-tnum font-display text-5xl font-black leading-none text-gk-kalk">
+                          {date.getDate()}
+                        </span>
+                        <div className="flex items-baseline gap-2 sm:mt-1.5 sm:flex-col sm:gap-0">
+                          <span className="font-mono text-xs uppercase tracking-plate text-gk-oranje">
+                            {getShortMonth(event, language)}
+                          </span>
+                          <span className="gk-tnum font-mono text-xs text-gk-rook sm:mt-1">
+                            {date.getFullYear()}
                           </span>
                         </div>
-                        <div className="flex items-center space-x-2 text-gray-300">
-                          <Home size={16} />
-                          <span>{event.venue}</span>
+                      </div>
+
+                      {/* Details */}
+                      <div className="min-w-0 flex-1 px-6 py-6">
+                        <div className="flex flex-wrap items-start justify-between gap-4">
+                          <h3 className="gk-display text-2xl text-gk-kalk transition-colors group-hover:text-gk-oranje md:text-3xl">
+                            {event.title}
+                          </h3>
+                          <span className="flex items-center gap-2">
+                            <span
+                              aria-hidden="true"
+                              className={cn("h-1.5 w-1.5 animate-gk-led", signal.dot)}
+                            />
+                            <span
+                              className={cn(
+                                "font-mono text-[0.65rem] uppercase tracking-plate",
+                                signal.text,
+                              )}
+                            >
+                              {statusLabel(event.status)}
+                            </span>
+                          </span>
                         </div>
-                      </div>
 
-                      {/* Address */}
-                      <div className="flex mt-2 text-sm text-gray-400">
-                        <MapPin size={16} />
-                        <span className="ml-2">{event.address}</span>
+                        <dl className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+                          <div>
+                            <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                              {t("events.doors")}
+                            </dt>
+                            <dd className="gk-tnum mt-1 font-mono text-sm text-gk-kalk">
+                              {event.startTime} – {event.endTime}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                              {t("events.venue")}
+                            </dt>
+                            <dd className="mt-1 text-sm text-gk-kalk">{event.venue}</dd>
+                          </div>
+                        </dl>
+
+                        <p className="mt-4 flex items-start gap-2 text-sm text-gk-rook">
+                          <MapPin size={15} className="mt-0.5 shrink-0 text-gk-rook" />
+                          {event.address}
+                        </p>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Status and Action Section */}
-                  <div className="flex items-center space-x-4">
-                    {shouldShowTickets(event) ? (
-                      <Button
-                        onClick={() => scrollToSection("tickets")}
-                        className="bg-gradient-to-r from-cyan-500 to-purple-600 hover:from-cyan-600 hover:to-purple-700 text-white px-6 py-2 font-semibold transition-all duration-300 transform hover:scale-105"
-                      >
-                        GET TICKETS
-                      </Button>
-                    ) : (
-                      <div className="px-6 py-2 text-gray-400 font-semibold">
-                        {event.status === 'sold-out' ? 'Tickets sold Out' : 'Tickets coming Soon'}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                    {/* Footer strip */}
+                    <div className="flex flex-wrap items-center justify-between gap-4 border-t border-gk-staal px-6 py-4">
+                      <p className="font-mono text-[0.65rem] uppercase tracking-plate text-gk-rook">
+                        <span className="text-gk-rook/70">{t("events.music")}</span>{" "}
+                        {event.genres.join(" · ")}
+                      </p>
 
-                {/* Additional Event Info */}
-                <div className="mt-6 pt-6 border-t border-gray-700/50">
-                  <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-400">
-                    <div className="flex items-center space-x-6">
-                      <Music size={20} className="text-cyan-400" />
-                      <span>{event.genres.join(' • ')}</span>
+                      {shouldShowTickets(event) ? (
+                        <button
+                          onClick={() => scrollToSection("tickets")}
+                          className="group/cta inline-flex items-center gap-2 bg-gk-oranje px-5 py-2.5 font-mono text-[0.65rem] font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk"
+                        >
+                          {t("events.cta")}
+                          <ArrowRight
+                            size={13}
+                            className="transition-transform duration-300 group-hover/cta:translate-x-0.5"
+                          />
+                        </button>
+                      ) : (
+                        <span className="border border-gk-staal px-5 py-2.5 font-mono text-[0.65rem] uppercase tracking-plate text-gk-rook">
+                          {event.status === "sold-out"
+                            ? t("events.cta.soldOut")
+                            : t("events.cta.comingSoon")}
+                        </span>
+                      )}
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <div
-                        className={`w-2 h-2 rounded-full animate-pulse ${
-                          event.status === 'tickets-available'
-                            ? 'bg-green-500'
-                            : event.status === 'sold-out'
-                            ? 'bg-red-500'
-                            : 'bg-yellow-500'
-                        }`}
-                      />
-                      <span
-                        className={`font-semibold ${
-                          event.status === 'tickets-available'
-                            ? 'text-green-400'
-                            : event.status === 'sold-out'
-                            ? 'text-red-400'
-                            : 'text-yellow-400'
-                        }`}
-                      >
-                        {event.status === 'tickets-available'
-                          ? 'Tickets Available'
-                          : event.status === 'sold-out'
-                          ? 'Sold Out'
-                          : 'Coming Soon'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  </article>
+                </Reveal>
+              )
+            })}
+          </div>
+        )}
       </div>
     </section>
   )

@@ -1,12 +1,39 @@
 import type { Metadata, Viewport } from 'next'
+import { Archivo, Big_Shoulders_Display, Space_Mono } from 'next/font/google'
 import './globals.css'
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/toaster"
+import { LanguageProvider } from "@/components/language-provider"
+import { defaultLanguage, languageMeta } from "@/lib/i18n/config"
+
+// Display: industrial signage condensed. Body: sturdy grotesk.
+// Mono: data plates, times, coordinates.
+const display = Big_Shoulders_Display({
+  subsets: ['latin'],
+  weight: ['500', '700', '800', '900'],
+  variable: '--font-display',
+  display: 'swap',
+})
+
+const body = Archivo({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-body',
+  display: 'swap',
+})
+
+const mono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'Gronings Kwartier',
-  description: 'Gronings Kwartier is a techno festival in the heart of Groningen. Join us for an unforgettable experience.',
-  keywords: ['techno', 'house', 'festival', 'Groningen', 'Gronings Kwartier', 'electronic music'],
+  title: 'Gronings Kwartier — 31 oktober 2026',
+  description:
+    'Gronings Kwartier is een technofestival op het Suikerfabriekterrein in Groningen. 31 oktober 2026, De Huiskamer, Suikerlaan 18.',
+  keywords: ['techno', 'house', 'festival', 'Groningen', 'Grunnen', 'Gronings Kwartier', 'Suikerfabriek', 'elektronische muziek'],
   authors: [{ name: 'Gronings Kwartier', url: 'https://gronings-kwartier.nl' }],
   creator: 'Gronings Kwartier',
   metadataBase: new URL('https://gronings-kwartier.nl'),
@@ -16,16 +43,12 @@ export const metadata: Metadata = {
     apple: '/favicon.ico',
   },
   openGraph: {
-    title: 'Gronings Kwartier',
-    description: '8 November 2025 - Huiskamer Groningen',
-  url: 'https://www.gronings-kwartier.nl',
+    title: 'Gronings Kwartier — 31 oktober 2026',
+    description: '31 oktober 2026 · De Huiskamer · Suikerlaan 18, Groningen',
+    url: 'https://www.gronings-kwartier.nl',
     siteName: 'Gronings Kwartier',
     locale: 'nl_NL',
     type: 'website',
-    // Explicit image(s) for social previews (og:image)
-    // Provide an SVG for high-quality clients and a PNG fallback for platforms
-    // that don't render SVG (WhatsApp often doesn't) — PNG listed second.
-    // Use the existing logo as the primary preview image for maximum compatibility
     images: [
       'https://www.gronings-kwartier.nl/logo.png',
       'https://www.gronings-kwartier.nl/og-image.svg',
@@ -33,8 +56,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Gronings Kwartier',
-    description: 'Gronings Kwartier is a techno festival in the heart of Groningen. Join us for an unforgettable experience.',
+    title: 'Gronings Kwartier — 31 oktober 2026',
+    description: '31 oktober 2026 · De Huiskamer · Suikerlaan 18, Groningen',
     images: [
       'https://gronings-kwartier.nl/logo.png',
       'https://gronings-kwartier.nl/og-image.svg',
@@ -46,7 +69,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#000000',
+  themeColor: '#08090A',
 }
 
 export default function RootLayout({
@@ -55,10 +78,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="nl">
+    <html
+      lang={languageMeta[defaultLanguage].htmlLang}
+      className={`${display.variable} ${body.variable} ${mono.variable}`}
+    >
       <body>
-        {children}
-        <Toaster />
+        <LanguageProvider>
+          {children}
+          <Toaster />
+        </LanguageProvider>
         <Analytics />
       </body>
     </html>
