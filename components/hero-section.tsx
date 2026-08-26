@@ -46,7 +46,7 @@ export default function HeroSection({ event, scrollToSection }: HeroSectionProps
       </div>
 
       {/* Wordmark block fills whatever the counter leaves */}
-      <div className="relative z-10 flex flex-1 flex-col justify-end px-6 pb-10 pt-28 sm:pb-14">
+      <div className="relative z-10 flex flex-1 flex-col justify-end px-6 pb-10 pt-32 sm:pb-14">
         <div className="mx-auto w-full max-w-7xl">
           <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-700">
             <span className="gk-plate">

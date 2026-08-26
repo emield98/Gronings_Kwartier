@@ -86,6 +86,11 @@ const config: Config = {
           "0%, 100%": { opacity: "1", transform: "scale(1)" },
           "50%": { opacity: "0.35", transform: "scale(0.82)" },
         },
+        "gk-drop": {
+          "0%": { transform: "translateY(-100%)", opacity: "0" },
+          "12%, 78%": { opacity: "1" },
+          "100%": { transform: "translateY(400%)", opacity: "0" },
+        },
         "gk-plate-in": {
           from: { opacity: "0", transform: "translateY(1.25rem)" },
           to: { opacity: "1", transform: "translateY(0)" },
@@ -96,6 +101,7 @@ const config: Config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "gk-hazard-pan": "gk-hazard-pan 3s linear infinite",
         "gk-led": "gk-led 2s ease-in-out infinite",
+        "gk-drop": "gk-drop 3.4s cubic-bezier(0.55, 0, 0.45, 1) infinite",
       },
     },
   },

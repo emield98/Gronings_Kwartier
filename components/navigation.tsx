@@ -81,7 +81,7 @@ export default function Navigation({ activeSection, scrollToSection }: Navigatio
             <img
               src="/logo.png"
               alt="Gronings Kwartier"
-              className="h-11 w-auto object-contain"
+              className="h-14 w-auto object-contain md:h-16"
             />
           </a>
 
@@ -127,24 +127,42 @@ export default function Navigation({ activeSection, scrollToSection }: Navigatio
             </div>
           </div>
 
-          {/* Mobile trigger */}
+          {/* Mobile trigger. It only ever opens: the overlay carries its own
+              close control, so this one hides underneath rather than doubling up. */}
           <button
-            className="relative z-[60] flex h-10 w-10 items-center justify-center border border-gk-staal text-gk-kalk transition-colors hover:border-gk-oranje md:hidden"
-            aria-label={isMenuOpen ? t("nav.closeMenu") : t("nav.openMenu")}
+            className={cn(
+              "flex h-10 w-10 items-center justify-center border border-gk-staal text-gk-kalk transition-colors hover:border-gk-oranje md:hidden",
+              isMenuOpen && "invisible",
+            )}
+            aria-label={t("nav.openMenu")}
             aria-expanded={isMenuOpen}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => setIsMenuOpen(true)}
           >
-            {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+            <Menu size={20} />
           </button>
         </div>
       </nav>
 
       {/* Mobile overlay */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[55] bg-gk-ink md:hidden">
-          <div aria-hidden="true" className="gk-hazard h-2 w-full" />
+        <div className="fixed inset-0 z-[55] flex flex-col bg-gk-ink md:hidden">
+          <div aria-hidden="true" className="gk-hazard h-2 w-full shrink-0" />
 
-          <div className="flex min-h-[calc(100vh-0.5rem)] flex-col justify-between px-6 pb-10 pt-24">
+          {/* Control bar: language on the left, close on the right. Same
+              padding as the nav bar, so the X lands where the burger was. */}
+          <div className="flex shrink-0 items-center justify-between gap-4 px-6 py-4">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              onClick={() => setIsMenuOpen(false)}
+              aria-label={t("nav.closeMenu")}
+              className="flex h-10 w-10 items-center justify-center border border-gk-staal text-gk-kalk transition-colors hover:border-gk-oranje hover:text-gk-oranje"
+            >
+              <X size={20} />
+            </button>
+          </div>
+
+          <div className="flex flex-1 flex-col justify-between gap-10 overflow-y-auto px-6 pb-10 pt-8">
             <nav className="flex flex-col">
               {siteConfig.navigation.map((section, index) => {
                 const isActive = activeSection === section
@@ -178,8 +196,7 @@ export default function Navigation({ activeSection, scrollToSection }: Navigatio
               })}
             </nav>
 
-            <div className="flex items-center justify-between gap-4 pt-10">
-              <LanguageSwitcher size="lg" />
+            <div className="flex items-center gap-4">
               <a
                 href={siteConfig.links.instagram}
                 target="_blank"

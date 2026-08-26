@@ -7,6 +7,11 @@ interface RevealProps {
   children: React.ReactNode
   /** Stagger in milliseconds, applied as a transition delay. */
   delay?: number
+  /**
+   * "fade" lifts the block a little. "mask" clips to the element's own box
+   * and slides the content up from behind it — for display type.
+   */
+  variant?: "fade" | "mask"
   className?: string
 }
 
@@ -15,7 +20,12 @@ interface RevealProps {
  * query in globals.css neutralises the transform, so nothing is hidden from
  * readers who opt out of motion.
  */
-export default function Reveal({ children, delay = 0, className }: RevealProps) {
+export default function Reveal({
+  children,
+  delay = 0,
+  variant = "fade",
+  className,
+}: RevealProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(false)
 
@@ -46,6 +56,19 @@ export default function Reveal({ children, delay = 0, className }: RevealProps) 
     observer.observe(node)
     return () => observer.disconnect()
   }, [])
+
+  if (variant === "mask") {
+    return (
+      <div ref={ref} data-visible={visible} className={cn("gk-mask", className)}>
+        <span
+          className="gk-mask-inner"
+          style={delay ? { transitionDelay: `${delay}ms` } : undefined}
+        >
+          {children}
+        </span>
+      </div>
+    )
+  }
 
   return (
     <div

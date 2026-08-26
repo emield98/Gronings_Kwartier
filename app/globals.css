@@ -46,7 +46,7 @@
   html {
     scroll-behavior: smooth;
     /* Clear the fixed nav when jumping to a section. */
-    scroll-padding-top: 5.5rem;
+    scroll-padding-top: 7rem;
   }
 
   body {
@@ -155,6 +155,34 @@
     );
   }
 
+  /* ── Type mask: a line rises out from behind its own baseline ────── */
+  .gk-mask {
+    overflow: hidden;
+    /* Display type with leading below 1 overflows its line box, so the
+       mask is padded out and pulled back in — otherwise it shaves glyphs. */
+    padding: 0.14em 0 0.1em;
+    margin: -0.14em 0 -0.1em;
+  }
+
+  .gk-mask-inner {
+    display: block;
+    opacity: 0;
+    transform: translateY(105%) skewY(2.5deg);
+    transition:
+      transform 0.95s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.5s linear;
+  }
+
+  .gk-mask[data-visible="true"] .gk-mask-inner {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* A tube starting up: fires once, when the line arrives. */
+  .gk-mask[data-visible="true"] .gk-flicker {
+    animation: gk-flicker 1.4s steps(1, end) 0.55s both;
+  }
+
   /* ── Scroll reveal ───────────────────────────────────────────────── */
   .gk-reveal {
     opacity: 0;
@@ -194,6 +222,17 @@
   }
 }
 
+@keyframes gk-flicker {
+  0%, 8% { opacity: 0.15; text-shadow: none; }
+  9%, 12% { opacity: 1; text-shadow: 0 0 42px rgb(var(--gk-oranje) / 0.55); }
+  13%, 19% { opacity: 0.2; text-shadow: none; }
+  20%, 24% { opacity: 1; text-shadow: 0 0 42px rgb(var(--gk-oranje) / 0.55); }
+  25%, 31% { opacity: 0.35; text-shadow: none; }
+  32%, 44% { opacity: 1; text-shadow: 0 0 52px rgb(var(--gk-oranje) / 0.6); }
+  45%, 49% { opacity: 0.6; text-shadow: none; }
+  50%, 100% { opacity: 1; text-shadow: 0 0 34px rgb(var(--gk-oranje) / 0.4); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -207,8 +246,13 @@
     transition-duration: 0.01ms !important;
   }
 
-  .gk-reveal {
+  .gk-reveal,
+  .gk-mask-inner {
     opacity: 1;
     transform: none;
+  }
+
+  .gk-mask[data-visible="true"] .gk-flicker {
+    animation: none;
   }
 }

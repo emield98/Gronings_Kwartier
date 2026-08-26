@@ -18,7 +18,7 @@ const gos = {
 
   "hero.edition": "Editie {edition}",
   "hero.cta": "Hoal koartjes",
-  "hero.cta.comingSoon": "Koartjes binnenkört",
+  "hero.cta.comingSoon": "Koartjes binnenkört te kriegen",
   "hero.cta.soldOut": "Uutverkocht",
   "hero.scroll": "Noar beneden scrollen",
   "hero.doors": "Deuren lös",
@@ -35,7 +35,6 @@ const gos = {
   "countdown.seconds.short": "Sek",
   "countdown.live": "t Is zoveer — deuren binnen lös",
 
-  "about.plate": "Techno in Grunnen",
   "about.statement.line1": "N KWARTIER",
   "about.statement.line2": "DUURT HIER",
   "about.statement.line3": "N HAILE NACHT",
@@ -128,7 +127,6 @@ const nl: Record<TranslationKey, string> = {
   "countdown.seconds.short": "Sec",
   "countdown.live": "Het is zover — de deuren zijn open",
 
-  "about.plate": "Techno in Groningen",
   "about.statement.line1": "EEN KWARTIER",
   "about.statement.line2": "DUURT HIER",
   "about.statement.line3": "EEN HELE NACHT",
