@@ -2,7 +2,6 @@
 
 import { useLanguage } from "@/components/language-provider"
 import Reveal from "@/components/reveal"
-import MartiniClock from "@/components/martini-clock"
 
 export default function AboutSection() {
   const { t } = useLanguage()
@@ -30,18 +29,9 @@ export default function AboutSection() {
             <span className="block">{t("about.statement.line1")}</span>
           </Reveal>
 
-          {/* The mark nests into the step the staircase opens up: line one
-              closes above it, line two runs along its right flank, line three
-              passes underneath. It is sized in em, so it holds that nest at
-              every width — on a phone it simply shrinks with the type. */}
-          <div className="flex items-end gap-[0.28em]">
-            <Reveal delay={90} className="shrink-0">
-              <img src="/logo.png" alt="" aria-hidden="true" className="gk-mark block" />
-            </Reveal>
-            <Reveal variant="mask" delay={150} className="min-w-0 flex-1">
-              <span className="block">{t("about.statement.line2")}</span>
-            </Reveal>
-          </div>
+          <Reveal variant="mask" delay={140}>
+            <span className="block pl-[5%]">{t("about.statement.line2")}</span>
+          </Reveal>
 
           <Reveal variant="mask" delay={280}>
             <span className="gk-flicker block pl-[10%] text-gk-oranje">
@@ -50,20 +40,11 @@ export default function AboutSection() {
           </Reveal>
         </h2>
 
-        {/* The tower fills the room the staircase leaves open on the right,
-            and answers the statement: the quarter runs out, the night does
-            not. It wraps onto its own line when the column gets narrow. */}
-        <div className="mt-10 flex flex-wrap items-end gap-x-10 gap-y-8">
-          <Reveal delay={420}>
-            <p className="pl-[10%] font-mono text-xs uppercase tracking-plate text-gk-rook">
-              {t("about.sub")}
-            </p>
-          </Reveal>
-
-          <Reveal delay={200} className="ml-auto">
-            <MartiniClock className="h-[clamp(15rem,44vw,26rem)] w-auto" />
-          </Reveal>
-        </div>
+        <Reveal delay={420}>
+          <p className="mt-10 pl-[10%] font-mono text-xs uppercase tracking-plate text-gk-rook">
+            {t("about.sub")}
+          </p>
+        </Reveal>
       </div>
     </section>
   )

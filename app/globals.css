@@ -155,22 +155,6 @@
     );
   }
 
-  /* ── The mark, set as a glyph ────────────────────────────────────
-     logo.png is square but the artwork sits inside transparent padding
-     (ink runs 17.5%–82.7% across and 13.4%–81.1% down). The negative
-     margins pull the box back to the ink so the mark can be set tight
-     against the type; the em height keeps it in step with the type at
-     every width. */
-  .gk-mark {
-    /* Both axes are stated and the preflight max-width is lifted: with
-       width:auto the negative margins shrink the parent, which then clamps
-       the image back through max-width:100% and squashes it. */
-    height: 1.7em;
-    width: 1.7em;
-    max-width: none;
-    margin: -0.23em -0.29em -0.2em -0.3em;
-  }
-
   /* ── Type mask: a line rises out from behind its own baseline ────── */
   .gk-mask {
     overflow: hidden;
@@ -197,39 +181,6 @@
   /* A tube starting up: fires once, when the line arrives. */
   .gk-mask[data-visible="true"] .gk-flicker {
     animation: gk-flicker 1.4s steps(1, end) 0.55s both;
-  }
-
-  /* ── Martinitoren clock ──────────────────────────────────────────
-     One 8s cycle: the hand walks the quarter it was promised, holds on
-     it, then lets go and runs the rest of the night. It ends on 1440deg
-     — four whole turns — so the loop closes on itself without a snap.
-     Nothing animates until the tower is actually on screen. */
-  .gk-clock-hand {
-    transform-box: view-box;
-    transform-origin: 120px 236px;
-  }
-
-  .gk-clock-arc {
-    stroke-dasharray: var(--gk-arc);
-    stroke-dashoffset: var(--gk-arc);
-  }
-
-  .gk-clock-glow,
-  .gk-window {
-    opacity: 0.12;
-  }
-
-  .gk-clock[data-run="true"] .gk-clock-hand {
-    animation: gk-quarter 8s infinite;
-  }
-
-  .gk-clock[data-run="true"] .gk-clock-arc {
-    animation: gk-quarter-arc 8s infinite;
-  }
-
-  .gk-clock[data-run="true"] .gk-clock-glow,
-  .gk-clock[data-run="true"] .gk-window {
-    animation: gk-nightfall 8s infinite;
   }
 
   /* ── Scroll reveal ───────────────────────────────────────────────── */
@@ -271,56 +222,6 @@
   }
 }
 
-@keyframes gk-quarter {
-  0% {
-    transform: rotate(0deg);
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  16% {
-    transform: rotate(90deg);
-    animation-timing-function: linear;
-  }
-  30% {
-    transform: rotate(90deg);
-    animation-timing-function: cubic-bezier(0.7, 0, 0.85, 0.6);
-  }
-  100% {
-    transform: rotate(1440deg);
-  }
-}
-
-@keyframes gk-quarter-arc {
-  0% {
-    stroke-dashoffset: var(--gk-arc);
-    animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  16%,
-  100% {
-    stroke-dashoffset: calc(var(--gk-arc) * 0.75);
-  }
-}
-
-/* The lights come up the moment the quarter is spent. */
-@keyframes gk-nightfall {
-  0%,
-  30% {
-    opacity: 0.12;
-  }
-  33% {
-    opacity: 1;
-  }
-  36% {
-    opacity: 0.3;
-  }
-  39%,
-  92% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.12;
-  }
-}
-
 @keyframes gk-flicker {
   0%, 8% { opacity: 0.15; text-shadow: none; }
   9%, 12% { opacity: 1; text-shadow: 0 0 42px rgb(var(--gk-oranje) / 0.55); }
@@ -353,27 +254,5 @@
 
   .gk-mask[data-visible="true"] .gk-flicker {
     animation: none;
-  }
-
-  /* The tower keeps its meaning without the motion: hand parked on the
-     quarter, arc drawn, lights on. */
-  .gk-clock[data-run="true"] .gk-clock-hand,
-  .gk-clock[data-run="true"] .gk-clock-arc,
-  .gk-clock[data-run="true"] .gk-clock-glow,
-  .gk-clock[data-run="true"] .gk-window {
-    animation: none !important;
-  }
-
-  .gk-clock-hand {
-    transform: rotate(90deg);
-  }
-
-  .gk-clock-arc {
-    stroke-dashoffset: calc(var(--gk-arc) * 0.75);
-  }
-
-  .gk-clock-glow,
-  .gk-window {
-    opacity: 1;
   }
 }
