@@ -18,7 +18,7 @@ const gos = {
 
   "hero.edition": "Editie {edition}",
   "hero.cta": "Hoal koartjes",
-  "hero.cta.comingSoon": "Koartjes binnenkört te kriegen",
+  "hero.cta.comingSoon": "Koartjes binn snel te kriegen",
   "hero.cta.soldOut": "Uutverkocht",
   "hero.scroll": "Noar beneden scrollen",
   "hero.doors": "Deuren lös",

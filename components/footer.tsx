@@ -13,8 +13,8 @@ export default function Footer() {
     <footer className="bg-gk-ink">
       <div aria-hidden="true" className="gk-hazard h-2 w-full" />
 
-      <div className="mx-auto max-w-7xl px-6 py-12">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+      <div className="mx-auto max-w-5xl px-6 py-12">
+        <div className="grid justify-items-center gap-10 text-center md:grid-cols-2 md:items-start">
           <div className="shrink-0">
             <a href="/" aria-label={t("nav.home.aria")} className="inline-block">
               <img src="/logo.png" alt={siteConfig.name} className="h-12 w-auto object-contain" />
@@ -29,30 +29,13 @@ export default function Footer() {
             )}
           </div>
 
-          <div className="grid gap-8 sm:grid-cols-2 md:gap-16">
-            {nextEvent && (
-              <div>
-                <span className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
-                  {t("footer.venue")}
-                </span>
-                <a
-                  href={getMapsUrl(nextEvent)}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="mt-3 block text-sm leading-relaxed text-gk-kalk transition-colors hover:text-gk-oranje"
-                >
-                  {nextEvent.venue}
-                  <br />
-                  {nextEvent.address}
-                </a>
-              </div>
-            )}
+          <div className="grid gap-8">
 
             <div>
               <span className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
                 {t("contact.followUs.title")}
               </span>
-              <div className="mt-3 flex flex-col items-start gap-3">
+              <div className="mt-3 flex flex-col items-center gap-3">
                 <a
                   href={siteConfig.links.instagram}
                   target="_blank"
