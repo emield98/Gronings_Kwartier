@@ -3,7 +3,8 @@
 import { ArrowRight } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
 import { siteConfig } from "@/config/site"
-import { Event, getStampDate, getLongDate } from "@/lib/events"
+import Countdown from "@/components/countdown"
+import { Event, getStampDate, getLongDate, getEventStart } from "@/lib/events"
 
 interface HeroSectionProps {
   event?: Event
@@ -22,12 +23,10 @@ export default function HeroSection({ event, scrollToSection }: HeroSectionProps
         : t("hero.cta.comingSoon")
 
   return (
-    <section
-      id="home"
-      className="gk-grain relative flex min-h-screen min-h-[100svh] flex-col justify-end overflow-hidden pb-24 pt-32 md:pb-32"
-    >
-      {/* Treated background plate */}
-      <div className="absolute inset-0 z-0">
+    <section id="home" className="gk-grain gk-screen relative flex flex-col overflow-hidden">
+      {/* Treated background plate. No poster: the footage fades up out of
+          black rather than flashing a still first. */}
+      <div className="absolute inset-0 z-0 bg-gk-ink">
         <video
           className="h-full w-full object-cover"
           style={{ filter: "grayscale(1) contrast(1.25) brightness(0.72)" }}
@@ -35,7 +34,7 @@ export default function HeroSection({ event, scrollToSection }: HeroSectionProps
           muted
           loop
           playsInline
-          poster="/about.jpg"
+          preload="auto"
         >
           <source src="/header.mp4" type="video/mp4" />
         </video>
@@ -46,63 +45,60 @@ export default function HeroSection({ event, scrollToSection }: HeroSectionProps
         <div aria-hidden="true" className="gk-scanlines absolute inset-0 opacity-30" />
       </div>
 
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6">
-        <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-700">
-          <span className="gk-plate">
-            {event ? t("hero.edition", { edition: event.edition }) : siteConfig.name}
-          </span>
-        </div>
+      {/* Wordmark block fills whatever the counter leaves */}
+      <div className="relative z-10 flex flex-1 flex-col justify-end px-6 pb-10 pt-28 sm:pb-14">
+        <div className="mx-auto w-full max-w-7xl">
+          <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both duration-700">
+            <span className="gk-plate">
+              {event ? t("hero.edition", { edition: event.edition }) : siteConfig.name}
+            </span>
+          </div>
 
-        {/* Wordmark + date stamp */}
-        <div className="mt-6 flex flex-wrap items-end gap-x-8 gap-y-5">
-          <h1 className="gk-display animate-in fade-in slide-in-from-bottom-6 fill-mode-both text-[clamp(3.75rem,16vw,13rem)] text-gk-kalk duration-700 [animation-delay:120ms]">
-            Gronings
-            <br />
-            Kwartier
-          </h1>
+          {/* Wordmark + date stamp */}
+          <div className="mt-5 flex flex-wrap items-end gap-x-6 gap-y-4">
+            <h1 className="gk-display animate-in fade-in slide-in-from-bottom-6 fill-mode-both text-[clamp(3.5rem,22vw,13rem)] text-gk-kalk duration-700 [animation-delay:120ms]">
+              Gronings
+              <br />
+              Kwartier
+            </h1>
 
-          {event && (
-            <div className="animate-in fade-in slide-in-from-bottom-6 fill-mode-both mb-3 duration-700 [animation-delay:260ms]">
-              <span className="gk-tnum inline-block bg-gk-oranje px-4 py-2 font-mono text-lg font-bold tracking-tight text-gk-ink sm:text-2xl">
-                {getStampDate(event)}
-              </span>
-            </div>
-          )}
-        </div>
+            {event && (
+              <div className="animate-in fade-in slide-in-from-bottom-6 fill-mode-both mb-2 duration-700 [animation-delay:260ms]">
+                <span className="gk-tnum inline-block bg-gk-oranje px-3 py-1.5 font-mono text-base font-bold tracking-tight text-gk-ink sm:px-4 sm:py-2 sm:text-2xl">
+                  {getStampDate(event)}
+                </span>
+              </div>
+            )}
+          </div>
 
-        {/* Call to action */}
-        <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both mt-12 flex flex-wrap items-center gap-6 duration-700 [animation-delay:400ms]">
-          <button
-            onClick={() => scrollToSection("tickets")}
-            className="group inline-flex items-center gap-3 bg-gk-oranje px-7 py-4 font-mono text-xs font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk"
-          >
-            {ctaLabel}
-            <ArrowRight
-              size={16}
-              className="transition-transform duration-300 group-hover:translate-x-1"
-            />
-          </button>
+          {/* Call to action */}
+          <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 duration-700 [animation-delay:400ms] sm:mt-10">
+            <button
+              onClick={() => scrollToSection("tickets")}
+              className="group inline-flex items-center gap-3 bg-gk-oranje px-6 py-3.5 font-mono text-[0.7rem] font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk sm:px-7 sm:py-4 sm:text-xs"
+            >
+              {ctaLabel}
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </button>
 
-          {event && (
-            <p className="font-mono text-xs uppercase tracking-plate text-gk-rook">
-              {getLongDate(event, language)}
-            </p>
-          )}
+            {event && (
+              <p className="font-mono text-[0.7rem] uppercase tracking-plate text-gk-rook sm:text-xs">
+                {getLongDate(event, language)}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Scroll indicator — a gauge, not a bouncing arrow */}
-      <button
-        onClick={() => scrollToSection("about")}
-        aria-label={t("hero.scroll")}
-        className="absolute bottom-6 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
-      >
-        <span className="relative block h-12 w-px overflow-hidden bg-gk-staal">
-          <span className="absolute inset-x-0 top-0 h-4 animate-gk-led bg-gk-oranje" />
-        </span>
-      </button>
-
-      <div aria-hidden="true" className="gk-hazard absolute inset-x-0 bottom-0 z-10 h-2" />
+      {/* The counter is part of the hero, not the page below it */}
+      {event && (
+        <div className="animate-in fade-in fill-mode-both relative z-10 duration-700 [animation-delay:560ms]">
+          <Countdown target={getEventStart(event).toISOString()} />
+        </div>
+      )}
     </section>
   )
 }

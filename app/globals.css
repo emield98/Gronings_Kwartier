@@ -175,6 +175,15 @@
     text-wrap: balance;
   }
 
+  /* One viewport tall, but free to grow. A fixed height would clip the
+     wordmark on a landscape phone, where the viewport is short but the
+     type is sized off the width. The svh declaration wins where supported
+     and is dropped where it is not, leaving the vh fallback. */
+  .gk-screen {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+
   /* Condensed display setting used for the big stencil headlines. */
   .gk-display {
     @apply font-display font-black uppercase leading-[0.85] tracking-[-0.01em];

@@ -2,23 +2,12 @@
 
 import { useLanguage } from "@/components/language-provider"
 import Reveal from "@/components/reveal"
-import { getLongDate, type Event } from "@/lib/events"
 
-export default function AboutSection({ event }: { event?: Event }) {
-  const { language, t } = useLanguage()
-
-  const facts = [
-    { label: t("about.data.city"), value: t("about.data.city.value") },
-    { label: t("about.data.music"), value: (event?.genres ?? []).join(" · ") || "—" },
-    {
-      label: t("about.data.next"),
-      value: event ? getLongDate(event, language) : "—",
-      accent: true,
-    },
-  ]
+export default function AboutSection() {
+  const { t } = useLanguage()
 
   return (
-    <section id="about" className="gk-grain relative overflow-hidden bg-gk-ink py-28 md:py-44">
+    <section id="about" className="gk-grain relative overflow-hidden bg-gk-ink py-32 md:py-48">
       <div
         aria-hidden="true"
         className="gk-vignette pointer-events-none absolute inset-0 z-[1]"
@@ -48,26 +37,6 @@ export default function AboutSection({ event }: { event?: Event }) {
           <p className="mt-10 font-mono text-xs uppercase tracking-plate text-gk-rook">
             {t("about.sub")}
           </p>
-        </Reveal>
-
-        {/* Data plate */}
-        <Reveal delay={140}>
-          <dl className="mt-20 grid gap-px border border-gk-staal bg-gk-staal sm:grid-cols-3">
-            {facts.map((fact) => (
-              <div key={fact.label} className="bg-gk-ink px-5 py-5">
-                <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
-                  {fact.label}
-                </dt>
-                <dd
-                  className={`mt-2 text-sm font-medium ${
-                    fact.accent ? "text-gk-oranje" : "text-gk-kalk"
-                  }`}
-                >
-                  {fact.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
         </Reveal>
       </div>
     </section>

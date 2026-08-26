@@ -1,10 +1,9 @@
 "use client"
 
-import { getUpcomingEvents, getEventStart } from "@/lib/events"
+import { getUpcomingEvents } from "@/lib/events"
 import { useActiveSection, scrollToSection } from "@/hooks/use-navigation"
 import Navigation from "@/components/navigation"
 import HeroSection from "@/components/hero-section"
-import Countdown from "@/components/countdown"
 import AboutSection from "@/components/about-section"
 import EventsSection from "@/components/events-section"
 import TicketsSection from "@/components/tickets-section"
@@ -22,16 +21,7 @@ export default function GroningsKwartierWebsite() {
 
       <HeroSection event={headlineEvent} scrollToSection={scrollToSection} />
 
-      {/* The gauge is bolted over the seam between the hero and the page. */}
-      {headlineEvent && (
-        <div className="relative z-20 -mt-12 px-6 md:-mt-16">
-          <div className="mx-auto max-w-4xl">
-            <Countdown target={getEventStart(headlineEvent).toISOString()} />
-          </div>
-        </div>
-      )}
-
-      <AboutSection event={headlineEvent} />
+      <AboutSection />
 
       <EventsSection events={upcomingEvents} scrollToSection={scrollToSection} />
 

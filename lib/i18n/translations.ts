@@ -29,6 +29,10 @@ const gos = {
   "countdown.hours": "Uren",
   "countdown.minutes": "Minuten",
   "countdown.seconds": "Sekonden",
+  "countdown.days.short": "Dag",
+  "countdown.hours.short": "Uur",
+  "countdown.minutes.short": "Min",
+  "countdown.seconds.short": "Sek",
   "countdown.live": "t Is zoveer — deuren binnen lös",
 
   "about.plate": "Techno in Grunnen",
@@ -118,6 +122,10 @@ const nl: Record<TranslationKey, string> = {
   "countdown.hours": "Uren",
   "countdown.minutes": "Minuten",
   "countdown.seconds": "Seconden",
+  "countdown.days.short": "Dag",
+  "countdown.hours.short": "Uur",
+  "countdown.minutes.short": "Min",
+  "countdown.seconds.short": "Sec",
   "countdown.live": "Het is zover — de deuren zijn open",
 
   "about.plate": "Techno in Groningen",
