@@ -70,36 +70,8 @@ export default function HeroSection({ event, scrollToSection }: HeroSectionProps
           )}
         </div>
 
-        {/* Steel data rule */}
-        <dl className="animate-in fade-in fill-mode-both mt-10 grid gap-px border-y border-gk-staal bg-gk-staal duration-700 [animation-delay:400ms] sm:grid-cols-3">
-          <div className="bg-gk-ink/70 px-4 py-4 backdrop-blur-sm">
-            <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
-              {t("hero.venue")}
-            </dt>
-            <dd className="mt-1.5 text-sm font-medium text-gk-kalk">
-              {event ? `${event.venue} · ${event.address.split(",")[0]}` : "—"}
-            </dd>
-          </div>
-          <div className="bg-gk-ink/70 px-4 py-4 backdrop-blur-sm">
-            <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
-              {t("hero.doors")}
-            </dt>
-            <dd className="gk-tnum mt-1.5 font-mono text-sm font-medium text-gk-kalk">
-              {event ? `${event.startTime} – ${event.endTime}` : "—"}
-            </dd>
-          </div>
-          <div className="bg-gk-ink/70 px-4 py-4 backdrop-blur-sm">
-            <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
-              {t("events.music")}
-            </dt>
-            <dd className="mt-1.5 text-sm font-medium text-gk-kalk">
-              {event ? event.genres.join(" · ") : "—"}
-            </dd>
-          </div>
-        </dl>
-
         {/* Call to action */}
-        <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both mt-10 flex flex-wrap items-center gap-6 duration-700 [animation-delay:540ms]">
+        <div className="animate-in fade-in slide-in-from-bottom-4 fill-mode-both mt-12 flex flex-wrap items-center gap-6 duration-700 [animation-delay:400ms]">
           <button
             onClick={() => scrollToSection("tickets")}
             className="group inline-flex items-center gap-3 bg-gk-oranje px-7 py-4 font-mono text-xs font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk"
