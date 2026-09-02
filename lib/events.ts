@@ -15,7 +15,12 @@ export interface Event {
   status: 'tickets-available' | 'sold-out' | 'coming-soon'
   description?: string
   genres: string[]
-  ticketUrl?: string // Only show when status is 'tickets-available'
+  ticketUrl?: string // Only show once the sale has opened
+  /**
+   * The moment the sale opens, in Groningen wall-clock time. Until it passes
+   * the edition still reads as 'coming-soon', whatever `status` says.
+   */
+  saleStart?: string
 }
 
 export const events: Event[] = [
@@ -29,8 +34,12 @@ export const events: Event[] = [
     venue: 'De Huiskamer',
     address: 'Suikerlaan 18, 9743 DA Groningen',
     type: 'night',
-    status: 'coming-soon',
-    genres: ['Electronic', 'Techno', 'House']
+    status: 'tickets-available',
+    genres: ['Electronic', 'Techno', 'House'],
+    ticketUrl: 'https://weeztix.shop/qr9y6we3',
+    // 2 September is inside summer time, so CEST (+02:00) — unlike the
+    // October event date above.
+    saleStart: '2026-09-02T20:00:00+02:00'
   },
   {
     id: 'gronings-kwartier-editie-2025',
@@ -83,9 +92,43 @@ export const getEventsByStatus = (status: Event['status']) => {
   return events.filter(event => event.status === status)
 }
 
+/**
+ * The sale opening as it reads on the page, e.g. { date: '2 september',
+ * time: '20:00' }. `saleStart` is authored in Groningen wall-clock time, so
+ * it is read off the literal rather than bent through the viewer's timezone.
+ */
+export const getSaleMoment = (event: Event, language: Language) => {
+  if (!event.saleStart) return null
+  const [datePart, timePart] = event.saleStart.split('T')
+  const [, month, day] = datePart.split('-').map(Number)
+  return {
+    date: `${day} ${monthNames[language].long[month - 1]}`,
+    time: timePart.slice(0, 5)
+  }
+}
+
+// The moment the sale opens, as an absolute instant. Editions without one are
+// on sale as soon as their status says so.
+export const getSaleStart = (event: Event) =>
+  event.saleStart ? new Date(event.saleStart) : null
+
+/**
+ * The edition's status as of `now`. An edition whose sale has not opened yet
+ * still reads as 'coming-soon', so the shop appears on the clock rather than
+ * on a redeploy. Components read this through `useSaleClock`, which supplies a
+ * `now` that server and client agree on.
+ */
+export const getEventStatus = (event: Event, now: Date): Event['status'] => {
+  const saleStart = getSaleStart(event)
+  if (event.status === 'tickets-available' && saleStart && now < saleStart) {
+    return 'coming-soon'
+  }
+  return event.status
+}
+
 // Helper function to check if tickets should be shown
-export const shouldShowTickets = (event: Event) => {
-  return event.status === 'tickets-available' && event.ticketUrl
+export const shouldShowTickets = (event: Event, now: Date) => {
+  return getEventStatus(event, now) === 'tickets-available' && Boolean(event.ticketUrl)
 }
 
 // Map link for an edition's venue.

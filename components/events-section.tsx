@@ -1,8 +1,9 @@
 "use client"
 
 import { ArrowRight, MapPin } from "lucide-react"
-import { Event, shouldShowTickets, getShortMonth } from "@/lib/events"
+import { Event, shouldShowTickets, getEventStatus, getShortMonth } from "@/lib/events"
 import { useLanguage } from "@/components/language-provider"
+import { useSaleClock } from "@/hooks/use-sale-clock"
 import { SectionHeading } from "@/components/section-heading"
 import Reveal from "@/components/reveal"
 import { cn } from "@/lib/utils"
@@ -21,6 +22,7 @@ const STATUS_STYLE: Record<Event["status"], { dot: string; text: string }> = {
 
 export default function EventsSection({ events, scrollToSection }: EventsSectionProps) {
   const { language, t } = useLanguage()
+  const now = useSaleClock(events)
 
   const statusLabel = (status: Event["status"]) =>
     status === "tickets-available"
@@ -43,7 +45,8 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
         ) : (
           <div className="mt-12 flex flex-col gap-5">
             {events.map((event, index) => {
-              const signal = STATUS_STYLE[event.status]
+              const status = getEventStatus(event, now)
+              const signal = STATUS_STYLE[status]
               const date = new Date(event.date)
 
               return (
@@ -82,7 +85,7 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
                                 signal.text,
                               )}
                             >
-                              {statusLabel(event.status)}
+                              {statusLabel(status)}
                             </span>
                           </span>
                         </div>
@@ -118,7 +121,7 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
                         {event.genres.join(" · ")}
                       </p>
 
-                      {shouldShowTickets(event) ? (
+                      {shouldShowTickets(event, now) ? (
                         <button
                           onClick={() => scrollToSection("tickets")}
                           className="group/cta inline-flex items-center gap-2 bg-gk-oranje px-5 py-2.5 font-mono text-[0.65rem] font-bold uppercase tracking-plate text-gk-ink transition-colors hover:bg-gk-kalk"
@@ -131,7 +134,7 @@ export default function EventsSection({ events, scrollToSection }: EventsSection
                         </button>
                       ) : (
                         <span className="border border-gk-staal px-5 py-2.5 font-mono text-[0.65rem] uppercase tracking-plate text-gk-rook">
-                          {event.status === "sold-out"
+                          {getEventStatus(event, now) === "sold-out"
                             ? t("events.cta.soldOut")
                             : t("events.cta.comingSoon")}
                         </span>

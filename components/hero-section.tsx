@@ -1,10 +1,12 @@
 "use client"
 
+import { useMemo } from "react"
 import { ArrowRight } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
+import { useSaleClock } from "@/hooks/use-sale-clock"
 import { siteConfig } from "@/config/site"
 import Countdown from "@/components/countdown"
-import { Event, getStampDate, getLongDate, getEventStart } from "@/lib/events"
+import { Event, getStampDate, getLongDate, getEventStart, getEventStatus } from "@/lib/events"
 
 interface HeroSectionProps {
   event?: Event
@@ -14,11 +16,15 @@ interface HeroSectionProps {
 export default function HeroSection({ event, scrollToSection }: HeroSectionProps) {
   const { language, t } = useLanguage()
 
-  const ctaLabel = !event
+  const clockedEvents = useMemo(() => (event ? [event] : []), [event])
+  const now = useSaleClock(clockedEvents)
+  const status = event ? getEventStatus(event, now) : null
+
+  const ctaLabel = !status
     ? t("hero.cta.comingSoon")
-    : event.status === "tickets-available"
+    : status === "tickets-available"
       ? t("hero.cta")
-      : event.status === "sold-out"
+      : status === "sold-out"
         ? t("hero.cta.soldOut")
         : t("hero.cta.comingSoon")
 

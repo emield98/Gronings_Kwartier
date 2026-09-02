@@ -3,12 +3,15 @@
 import { ArrowRight, Instagram } from "lucide-react"
 import {
   Event,
+  getEventStatus,
   shouldShowTickets,
   getFormattedDate,
   getFormattedDateTime,
   getLongDate,
+  getSaleMoment,
 } from "@/lib/events"
 import { useLanguage } from "@/components/language-provider"
+import { useSaleClock } from "@/hooks/use-sale-clock"
 import { SectionHeading } from "@/components/section-heading"
 import Reveal from "@/components/reveal"
 import { siteConfig } from "@/config/site"
@@ -19,9 +22,11 @@ interface TicketsSectionProps {
 
 export default function TicketsSection({ events }: TicketsSectionProps) {
   const { language, t } = useLanguage()
+  const now = useSaleClock(events)
 
-  const availableEvents = events.filter(shouldShowTickets)
+  const availableEvents = events.filter((event) => shouldShowTickets(event, now))
   const nextEvent = events[0]
+  const saleMoment = nextEvent ? getSaleMoment(nextEvent, language) : null
 
   return (
     <section
@@ -43,7 +48,10 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
                     href={event.ticketUrl}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="group flex border border-gk-staal bg-gk-beton transition-colors duration-300 hover:border-gk-oranje"
+                    // Stub and details sit side by side; the call to action drops
+                    // to its own full-width bar below them until there is room
+                    // for it on the same line.
+                    className="group grid grid-cols-[auto_1fr] border border-gk-staal bg-gk-beton transition-colors duration-300 hover:border-gk-oranje lg:grid-cols-[auto_1fr_auto] lg:items-stretch"
                   >
                     {/* Stub */}
                     <div className="flex w-24 shrink-0 flex-col items-center justify-center border-r border-dashed border-gk-staal bg-gk-oranje px-3 py-6 text-gk-ink sm:w-28">
@@ -55,7 +63,7 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
                       </span>
                     </div>
 
-                    <div className="min-w-0 flex-1 px-6 py-6">
+                    <div className="min-w-0 px-6 py-6">
                       <h3 className="gk-display text-2xl text-gk-kalk transition-colors group-hover:text-gk-oranje">
                         {event.title}
                       </h3>
@@ -64,14 +72,20 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
                       </p>
                       <p className="mt-4 text-sm text-gk-kalk">{event.venue}</p>
                       <p className="text-sm text-gk-rook">{event.address}</p>
-                      <span className="mt-5 inline-flex items-center gap-2 font-mono text-[0.65rem] font-bold uppercase tracking-plate text-gk-oranje">
-                        {t("tickets.cta")}
-                        <ArrowRight
-                          size={13}
-                          className="transition-transform duration-300 group-hover:translate-x-1"
-                        />
-                      </span>
                     </div>
+
+                    {/* The whole card is the link; this is the part that says so. */}
+                    <span className="col-span-2 flex items-center justify-center gap-3 border-t border-gk-staal bg-gk-oranje px-5 py-4 font-mono text-[0.7rem] font-bold uppercase tracking-plate text-gk-ink transition-colors duration-300 group-hover:bg-gk-kalk sm:text-xs lg:col-span-1 lg:m-6 lg:self-center lg:border-t-0 lg:px-6">
+                      <span
+                        aria-hidden="true"
+                        className="h-1.5 w-1.5 shrink-0 animate-gk-led bg-gk-ink"
+                      />
+                      <span className="text-center">{t("tickets.cta")}</span>
+                      <ArrowRight
+                        size={16}
+                        className="shrink-0 transition-transform duration-300 group-hover:translate-x-1"
+                      />
+                    </span>
                   </a>
                 </Reveal>
               )
@@ -86,12 +100,18 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
               <div className="grid gap-10 p-8 md:grid-cols-5 md:p-12">
                 <div className="md:col-span-3">
                   <h3 className="gk-display text-[clamp(2rem,6vw,3.25rem)] text-gk-kalk">
-                    {nextEvent.status === "sold-out"
+                    {getEventStatus(nextEvent, now) === "sold-out"
                       ? t("tickets.empty.title")
                       : t("tickets.soon.title")}
                   </h3>
                   <p className="mt-5 max-w-prose leading-relaxed text-gk-rook">
-                    {t("tickets.soon.body", { date: getLongDate(nextEvent, language) })}
+                    {saleMoment
+                      ? t("tickets.soon.saleAt", {
+                          date: getLongDate(nextEvent, language),
+                          saleDate: saleMoment.date,
+                          saleTime: saleMoment.time,
+                        })
+                      : t("tickets.soon.body", { date: getLongDate(nextEvent, language) })}
                   </p>
                   <a
                     href={siteConfig.links.instagram}
@@ -119,6 +139,19 @@ export default function TicketsSection({ events }: TicketsSectionProps) {
                       </p>
                     </div>
                     <dl className="mt-8 space-y-3 border-t border-gk-staal pt-5">
+                      {saleMoment && (
+                        <div>
+                          <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
+                            {t("tickets.plate")}
+                          </dt>
+                          <dd className="gk-tnum mt-1 font-mono text-sm text-gk-geel">
+                            {t("tickets.sale.opens", {
+                              saleDate: saleMoment.date,
+                              saleTime: saleMoment.time,
+                            })}
+                          </dd>
+                        </div>
+                      )}
                       <div>
                         <dt className="font-mono text-[0.6rem] uppercase tracking-plate text-gk-rook">
                           {t("hero.venue")}

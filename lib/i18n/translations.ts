@@ -68,6 +68,9 @@ const gos = {
   "tickets.empty.line2": "Kom gaauw weerom of volg ons op Instagram veur nijs!",
   "tickets.cta": "Klik om koartjes te kopen",
   "tickets.dateTimeJoin": "om",
+  "tickets.soon.saleAt":
+    "De koartjesverkoop veur {date} begunt op {saleDate} om {saleTime} uur. Zet hom vast in de agenda.",
+  "tickets.sale.opens": "Verkoop begunt {saleDate} om {saleTime}",
 
   "contact.plate": "Neem contact op",
   "contact.title": "CONTACT",
@@ -160,6 +163,9 @@ const nl: Record<TranslationKey, string> = {
   "tickets.empty.line2": "Kom snel terug of volg ons op Instagram voor nieuws!",
   "tickets.cta": "Klik om tickets te kopen",
   "tickets.dateTimeJoin": "om",
+  "tickets.soon.saleAt":
+    "De ticketverkoop voor {date} start op {saleDate} om {saleTime} uur. Zet het vast in je agenda.",
+  "tickets.sale.opens": "Verkoop start {saleDate} om {saleTime}",
 
   "contact.plate": "Neem contact op",
   "contact.title": "CONTACT",
